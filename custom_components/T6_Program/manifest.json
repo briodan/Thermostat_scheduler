@@ -1,9 +1,10 @@
 {
-    "domain": "my_scheduler",
-    "name": "My Scheduler",
+    "domain": "t6_program",
+    "name": "T6_Program",
     "version": "1.0.0",
+    "config_flow": true,
     "requirements": [],
     "dependencies": [],
-    "codeowners": ["@your-github-handle"]
+    "codeowners": ["@briodan"]
   }
   
