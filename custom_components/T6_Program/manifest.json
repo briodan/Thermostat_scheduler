@@ -1,0 +1,9 @@
+{
+    "domain": "my_scheduler",
+    "name": "My Scheduler",
+    "version": "1.0.0",
+    "requirements": [],
+    "dependencies": [],
+    "codeowners": ["@your-github-handle"]
+  }
+  
