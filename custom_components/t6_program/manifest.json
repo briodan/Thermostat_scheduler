@@ -1,10 +1,11 @@
 {
-    "domain": "t6_program",
-    "name": "T6_Program",
-    "version": "v0.0.1",
-    "config_flow": true,
-    "requirements": [],
-    "dependencies": [],
-    "codeowners": ["@briodan"]
-  }
-  
+  "domain": "t6_program",
+  "name": "T6_Program",
+  "version": "0.0.2",
+  "config_flow": true,
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": [
+    "@briodan"
+  ]
+}
