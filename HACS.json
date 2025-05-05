@@ -1,8 +1,8 @@
 {
     "name": "T6_Program",
-    "content_in_root": false,
-    "domains": ["t6_program"],
-    "country": "US",
-    "homeassistant": "2023.0.0"
+    "render_readme": true,
+    "homeassistant": "2023.0.0",
+    "zip_release": true,
+    "filename": "bambu_lab.zip"
   }
   
