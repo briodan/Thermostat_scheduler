@@ -1,9 +1,12 @@
+from datetime import time
 from .const import *
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.components.input_datetime import InputDatetime
 from homeassistant.components.input_number import InputNumber
+
+DOMAIN = "t6_program"  # Required for Home Assistant to recognize the integration
 
 async def async_setup(hass, config):
     return True
@@ -60,4 +63,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     await num_component.async_add_entities(num_entities)
 
+    return True
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     return True
