@@ -45,10 +45,19 @@ jobs:
           git tag "$VERSION"
           git push origin main --follow-tags
 
-      - name: 🚀 Create GitHub Release
+      - name: 📦 Package custom_components directory
+        run: |
+          mkdir -p release_package
+          cp -r custom_components release_package/
+          cd release_package
+          zip -r ../t6_program.zip custom_components
+          cd ..
+
+      - name: 🚀 Create GitHub Release with asset
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.version }}
           name: Release ${{ steps.version.outputs.version }}
+          files: t6_program.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
