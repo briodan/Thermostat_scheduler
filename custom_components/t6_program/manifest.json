@@ -1,6 +1,6 @@
 {
     "domain": "t6_program",
-    "name": "T6_Program",
+    "name": "t6_program",
     "version": "v0.0.1",
     "config_flow": true,
     "requirements": [],
