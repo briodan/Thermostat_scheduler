@@ -1,0 +1,54 @@
+name: Auto Version & Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  bump-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔢 Determine next version
+        id: version
+        run: |
+          git fetch --tags
+          latest=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1 || echo "v0.0.0")
+          echo "Latest tag: $latest"
+
+          IFS='.' read -r -a parts <<< "${latest#v}"
+          major="${parts[0]}"
+          minor="${parts[1]}"
+          patch="${parts[2]}"
+          new_patch=$((patch + 1))
+          new_version="v${major}.${minor}.${new_patch}"
+          echo "New version: $new_version"
+
+          echo "version=$new_version" >> "$GITHUB_OUTPUT"
+
+      - name: 📝 Update manifest.json
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          VERSION_NO_V=${VERSION#v}
+          jq --arg v "$VERSION_NO_V" '.version = $v' custom_components/t6_program/manifest.json > tmp.json
+          mv tmp.json custom_components/t6_program/manifest.json
+
+      - name: 🧾 Commit and tag
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git commit -am "🔖 Auto bump to $VERSION"
+          git tag "$VERSION"
+          git push origin main --follow-tags
+
+      - name: 🚀 Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
