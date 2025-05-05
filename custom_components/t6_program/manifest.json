@@ -1,15 +1,4 @@
 {
-<<<<<<< HEAD
-    "domain": "t6_program",
-    "name": "t6_program",
-    "version": "v0.0.1",
-    "config_flow": true,
-    "requirements": [],
-    "dependencies": [],
-    "codeowners": ["@briodan"]
-  }
-  
-=======
   "domain": "t6_program",
   "name": "T6_Program",
   "version": "0.0.2",
@@ -20,4 +9,3 @@
     "@briodan"
   ]
 }
->>>>>>> 8a4196e85fd799fce2588a34185406c541a58f40
