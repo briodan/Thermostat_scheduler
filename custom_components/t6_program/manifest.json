@@ -1,7 +1,7 @@
 {
   "domain": "t6_program",
   "name": "T6_Program",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "config_flow": true,
   "requirements": [],
   "dependencies": [],
