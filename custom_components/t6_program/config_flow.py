@@ -4,7 +4,7 @@ from homeassistant.core import callback
 import voluptuous as vol
 
 from homeassistant.helpers import entity_registry
-from homeassistant.helpers.entity_registry import async_entries_for_domain
+from homeassistant.helpers.entity_registry import async_get
 
 from .const import DOMAIN
 
@@ -14,17 +14,17 @@ DEFAULT_TIMES = ["07:00", "11:00", "15:00", "21:00"]
 DEFAULT_TEMP = 20.0
 DEFAULT_TOLERANCE = 1.0
 
-
-def get_temp_sensor_options(hass):
-    registry = entity_registry.async_get(hass)
-    sensors = async_entries_for_domain(registry, SENSOR_DOMAIN)
+async def get_temp_sensor_options(hass):
+    registry = await async_get(hass)
+    entities = list(registry.entities.values())
     return {
-        e.entity_id: f"{e.name or e.entity_id}"
-        for e in sensors
-        if "temperature" in (e.original_device_class or "").lower()
-        or "temperature" in e.entity_id.lower()
+        e.entity_id: e.name or e.entity_id
+        for e in entities
+        if e.domain == "sensor" and (
+            (e.device_class and "temperature" in e.device_class)
+            or "temperature" in e.entity_id.lower()
+        )
     }
-
 
 class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
