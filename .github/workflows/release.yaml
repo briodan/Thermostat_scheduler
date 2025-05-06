@@ -1,63 +1,58 @@
-name: Auto Version & Release
+name: Auto Version & HACS Release
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  bump-and-release:
+  release:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout code
+      - name: 📥 Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # required to get all tags
 
-      - name: 🔢 Determine next version
+      - name: 🔢 Determine Next Version
         id: version
         run: |
           git fetch --tags
           latest=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1 || echo "v0.0.0")
-          echo "Latest tag: $latest"
-
+          echo "Latest version: $latest"
           IFS='.' read -r -a parts <<< "${latest#v}"
-          major="${parts[0]}"
-          minor="${parts[1]}"
-          patch="${parts[2]}"
-          new_patch=$((patch + 1))
-          new_version="v${major}.${minor}.${new_patch}"
+          new_patch=$((parts[2]+1))
+          new_version="v${parts[0]}.${parts[1]}.$new_patch"
           echo "New version: $new_version"
-
           echo "version=$new_version" >> "$GITHUB_OUTPUT"
 
-      - name: 📝 Update manifest.json
+      - name: 📝 Update manifest.json Version
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           VERSION_NO_V=${VERSION#v}
           jq --arg v "$VERSION_NO_V" '.version = $v' custom_components/t6_program/manifest.json > tmp.json
           mv tmp.json custom_components/t6_program/manifest.json
 
-      - name: 🧾 Commit and tag
+      - name: 🔖 Commit and Tag New Version
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git commit -am "🔖 Auto bump to $VERSION"
+          git commit -am "🔖 Release $VERSION"
           git tag "$VERSION"
           git push origin main --follow-tags
 
-      - name: 📦 Package custom_components directory
+      - name: 📦 Build HACS-Compatible Release ZIP (flat)
         run: |
-          mkdir -p release_package
-          cp -r custom_components release_package/
-          cd release_package
-          zip -r ../t6_program.zip custom_components
-          cd ..
+          cd '${{ github.workspace }}/custom_components/t6_program'
+          zip t6_program.zip -r ./
 
-      - name: 🚀 Create GitHub Release with asset
+      - name: 🚀 Publish GitHub Release with ZIP
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.version }}
-          name: Release ${{ steps.version.outputs.version }}
-          files: t6_program.zip
+          name: ${{ steps.version.outputs.version }}
+          files: "${{ github.workspace }}/custom_components/t6_program/t6_program.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
