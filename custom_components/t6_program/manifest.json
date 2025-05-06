@@ -11,4 +11,8 @@
   "issue_tracker": "https://github.com/briodan/t6_program/issues",
   "requirements": [],
   "version": "0.0.12"
+  "version": "0.0.12",
+  "codeowners": [
+    "@briodan"
+  ]
 }
