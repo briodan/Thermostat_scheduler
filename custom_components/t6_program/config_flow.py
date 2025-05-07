@@ -1,5 +1,3 @@
-# config_flow.py (enhanced with descriptive pages)
-
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
@@ -10,6 +8,7 @@ TIME_OPTIONS = [f"{h:02d}:{m:02d}" for h in range(24) for m in (0, 30)]
 DEFAULT_TEMP = 20.0
 DEFAULT_TOLERANCE = 1.0
 DEFAULT_SENSOR = "sensor.none_found"
+DEFAULT_INSTANCE_NAME = "t6_program"
 
 class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
@@ -18,6 +17,27 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.data = {}
 
     async def async_step_user(self, user_input=None):
+        """Start config flow with instance name prompt."""
+        return await self.async_step_instance_name()
+
+    async def async_step_instance_name(self, user_input=None):
+        """Ask the user to enter a unique instance name."""
+        if user_input:
+            self.data["instance_name"] = user_input["instance_name"]
+            return await self.async_step_initial_config()
+
+        return self.async_show_form(
+            step_id="instance_name",
+            data_schema=vol.Schema({
+                vol.Required("instance_name", default=DEFAULT_INSTANCE_NAME): str
+            }),
+            description_placeholders={
+                "intro": "Enter a unique name for this T6 program instance"
+            }
+        )
+
+    async def async_step_initial_config(self, user_input=None):
+        """Initial configuration with temperature and sensor setup."""
         sensors = await self._get_temp_sensor_options()
 
         if user_input:
@@ -32,11 +52,11 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             vol.Required("current_target_temperature", default=DEFAULT_TEMP): vol.All(vol.Coerce(float), vol.Range(min=10, max=30)),
             vol.Required("adjusted_cool_temperature", default=DEFAULT_TEMP): vol.All(vol.Coerce(float), vol.Range(min=10, max=30)),
             vol.Required("adjusted_heat_temperature", default=DEFAULT_TEMP): vol.All(vol.Coerce(float), vol.Range(min=10, max=30)),
-            vol.Required("thermostat_state", default="idle" ): vol.In(["idle", "heat", "cool"]),
+            vol.Required("thermostat_state", default="idle"): vol.In(["idle", "heat", "cool"]),
         })
 
         return self.async_show_form(
-            step_id="user",
+            step_id="initial_config",
             data_schema=schema,
             description_placeholders={
                 "intro": "Initial configuration of the T6 program",
@@ -50,14 +70,6 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 "state": "Thermostat operational state"
             }
         )
-
-    async def _get_temp_sensor_options(self):
-        registry = async_get(self.hass)
-        return {
-            e.entity_id: e.name or e.entity_id
-            for e in registry.entities.values()
-            if e.domain == "sensor" and (e.device_class == "temperature" or "temperature" in e.entity_id)
-        } or {DEFAULT_SENSOR: "No temperature sensors found"}
 
     async def async_step_mf_config(self, user_input=None):
         sensors = await self._get_temp_sensor_options()
@@ -86,7 +98,10 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         sensors = await self._get_temp_sensor_options()
         if user_input:
             self.data.update(user_input)
-            return self.async_create_entry(title="T6 Program", data=self.data)
+            return self.async_create_entry(
+                title=self.data.get("instance_name", "T6 Program"),
+                data=self.data
+            )
 
         schema = {}
         for i in range(1, 5):
@@ -105,10 +120,19 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             }
         )
 
+    async def _get_temp_sensor_options(self):
+        registry = async_get(self.hass)
+        return {
+            e.entity_id: e.name or e.entity_id
+            for e in registry.entities.values()
+            if e.domain == "sensor" and (e.device_class == "temperature" or "temperature" in e.entity_id)
+        } or {DEFAULT_SENSOR: "No temperature sensors found"}
+
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
         return T6ProgramOptionsFlowHandler(config_entry)
+
 
 class T6ProgramOptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry):

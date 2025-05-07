@@ -7,17 +7,20 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 DOMAIN = "t6_program"
 
 class T6ProgramNumber(NumberEntity, RestoreEntity):
-    def __init__(self, config_entry, name: str, unique_id: str, default: float, min_v: float, max_v: float):
+    def __init__(self, config_entry, name: str, unique_key: str, default: float, min_v: float, max_v: float):
         self._config_entry = config_entry
-        self._attr_name = name
-        self._attr_unique_id = unique_id
-        self._attr_entity_id = f"number.t6_program_{unique_id}"
+        instance_name = config_entry.data.get("instance_name", "t6_program")
+        safe_instance = instance_name.lower().replace(" ", "_")
+
+        # Correctly assign unique_id for use in entity_id
+        self._attr_unique_id = f"{safe_instance}_{unique_key}"
+        self._attr_name = name  # UI name (no prefix)
         self._attr_native_unit_of_measurement = "°C"
         self._attr_min_value = min_v
         self._attr_max_value = max_v
         self._attr_step = 0.5
         self._default = default
-        self._attr_native_value = default  # will be overwritten if restored
+        self._attr_native_value = default  # Will be overwritten if restored
 
     async def async_set_native_value(self, value: float) -> None:
         self._attr_native_value = value
@@ -64,6 +67,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
     for key, (default, min_v, max_v) in fixed_ranges.items():
         val = entry.data.get(key, default)
-        entities.append(T6ProgramNumber(entry, key.replace("_", " ").title(), key, val, min_v, max_v))
+        name = key.replace("_", " ").title()
+        entities.append(T6ProgramNumber(entry, name, key, val, min_v, max_v))
 
-    async_add_entities(entities)
+    async_add_entities(entities, update_before_add=True)
