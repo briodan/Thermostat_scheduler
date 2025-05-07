@@ -14,8 +14,13 @@ class T6ProgramTimeSelect(SelectEntity):
         self._config_entry = config_entry
         self._attr_name = name
         self._attr_unique_id = unique_id
+        self._attr_entity_id = f"select.t6_program_{unique_id}"
         self._attr_options = TIME_OPTIONS
         self._attr_current_option = current_option
+
+    async def async_select_option(self, option: str) -> None:
+        self._attr_current_option = option
+        self.async_write_ha_state()
 
     @property
     def device_info(self):
@@ -26,10 +31,6 @@ class T6ProgramTimeSelect(SelectEntity):
             "model": "T6 Scheduler",
             "entry_type": "service"
         }
-
-    async def async_select_option(self, option: str) -> None:
-        self._attr_current_option = option
-        self.async_write_ha_state()
 
 
 class T6ProgramSensorSelect(SelectEntity):
@@ -37,8 +38,13 @@ class T6ProgramSensorSelect(SelectEntity):
         self._config_entry = config_entry
         self._attr_name = name
         self._attr_unique_id = unique_id
+        self._attr_entity_id = f"select.t6_program_{unique_id}"
         self._attr_options = options
         self._attr_current_option = selected
+
+    async def async_select_option(self, option: str) -> None:
+        self._attr_current_option = option
+        self.async_write_ha_state()
 
     @property
     def device_info(self):
@@ -50,9 +56,29 @@ class T6ProgramSensorSelect(SelectEntity):
             "entry_type": "service"
         }
 
+
+class T6ProgramFixedSelect(SelectEntity):
+    def __init__(self, config_entry, name: str, unique_id: str, options: list[str], default: str):
+        self._config_entry = config_entry
+        self._attr_name = name
+        self._attr_unique_id = unique_id
+        self._attr_entity_id = f"select.t6_program_{unique_id}"
+        self._attr_options = options
+        self._attr_current_option = default
+
     async def async_select_option(self, option: str) -> None:
         self._attr_current_option = option
         self.async_write_ha_state()
+
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, self._config_entry.entry_id)},
+            "name": "T6 Program",
+            "manufacturer": "Custom",
+            "model": "T6 Scheduler",
+            "entry_type": "service"
+        }
 
 
 async def async_setup_entry(
@@ -62,14 +88,15 @@ async def async_setup_entry(
 ):
     entities = []
 
-    # Create time selectors
+    # Time slot selects
     for i in range(1, 5):
         for prefix in ("m_f", "s_s"):
             eid = f"{prefix}_time_{i}"
             name = eid.replace("_", " ").title()
-            entities.append(T6ProgramTimeSelect(entry, name, eid, "07:00"))
+            selected = entry.data.get(eid, "07:00")
+            entities.append(T6ProgramTimeSelect(entry, name, eid, selected))
 
-    # Get temperature sensors from entity registry
+    # Get temperature sensors
     registry = async_get(hass)
     all_entities = registry.entities.values()
     temp_sensors = sorted([
@@ -77,18 +104,25 @@ async def async_setup_entry(
         if e.domain == "sensor" and (
             (e.device_class == "temperature") or "temperature" in e.entity_id
         )
-    ])
-
-    if not temp_sensors:
-        temp_sensors = ["sensor.none_found"]
-
+    ]) or ["sensor.none_found"]
     default_sensor = temp_sensors[0]
 
-    # Create sensor selectors
+    # Sensor slot selects
     for i in range(1, 5):
         for prefix in ("m_f", "s_s"):
             eid = f"{prefix}_sensor_{i}"
             name = eid.replace("_", " ").title()
-            entities.append(T6ProgramSensorSelect(entry, name, eid, temp_sensors, default_sensor))
+            selected = entry.data.get(eid, default_sensor)
+            entities.append(T6ProgramSensorSelect(entry, name, eid, temp_sensors, selected))
+
+    # Current sensor
+    selected = entry.data.get("current_sensor", default_sensor)
+    entities.append(T6ProgramSensorSelect(entry, "Current Sensor", "current_sensor", temp_sensors, selected))
+
+    # Thermostat state
+    selected = entry.data.get("thermostat_state", "idle")
+    entities.append(
+        T6ProgramFixedSelect(entry, "Thermostat State", "thermostat_state", ["idle", "heat", "cool"], selected)
+    )
 
     async_add_entities(entities)
