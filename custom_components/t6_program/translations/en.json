@@ -1,0 +1,18 @@
+{
+    "config": {
+      "step": {
+        "user": {
+          "title": "Initial Configuration",
+          "description": "Set initial tolerances, current temperature state, and default thermostat behavior. These values will guide the program's decision-making logic."
+        },
+        "mf_config": {
+          "title": "Weekday Schedule Setup (Monday to Friday)",
+          "description": "Configure up to 4 schedule slots for weekdays. Each slot includes a start time, target temperature, and the temperature sensor to use."
+        },
+        "ss_config": {
+          "title": "Weekend Schedule Setup (Saturday and Sunday)",
+          "description": "Configure up to 4 schedule slots for weekends. Each slot includes a start time, target temperature, and the temperature sensor to use."
+        }
+      }
+    }
+  }
