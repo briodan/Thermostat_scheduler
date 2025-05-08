@@ -1,39 +1,48 @@
-from datetime import time
+from datetime import datetime, time
 from homeassistant.components.time import TimeEntity
 from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 DOMAIN = "t6_program"
-
-DEFAULT_TIMES = {
-    "m_f_time_1": time(6, 0),
-    "m_f_time_2": time(8, 0),
-    "m_f_time_3": time(15, 0),
-    "m_f_time_4": time(21, 0),
-    "s_s_time_1": time(6, 0),
-    "s_s_time_2": time(8, 0),
-    "s_s_time_3": time(15, 0),
-    "s_s_time_4": time(21, 0),
-}
+DEFAULT_TIME_STRING = "06:00"
 
 
-async def async_setup_entry(hass, entry, async_add_entities):
+def parse_time_string(s: str) -> time:
+    """Parse 'HH:MM' string into datetime.time."""
+    try:
+        return datetime.strptime(s, "%H:%M").time()
+    except Exception:
+        return time(0, 0)  # fallback if invalid
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     entities = []
-    for entity_id, default_time in DEFAULT_TIMES.items():
-        value = entry.data.get(entity_id)
-        if isinstance(value, str):
-            try:
-                parsed = time.fromisoformat(value)
-            except ValueError:
-                parsed = default_time
-        else:
-            parsed = default_time
-        entities.append(ScheduleTimeEntity(name=entity_id, unique_id=entity_id, initial_time=parsed, entry_id=entry.entry_id))
+
+    for prefix in ("m_f", "s_s"):
+        for i in range(1, 5):
+            key = f"{prefix}_time_{i}"
+            time_str = entry.data.get(key, DEFAULT_TIME_STRING)
+            entities.append(
+                T6ProgramTimeEntity(
+                    name=key.replace("_", " ").title(),
+                    unique_id=key,
+                    initial_time=parse_time_string(time_str),
+                    entry_id=entry.entry_id,
+                )
+            )
+
     async_add_entities(entities)
 
 
-class ScheduleTimeEntity(TimeEntity, RestoreEntity):
+class T6ProgramTimeEntity(TimeEntity, RestoreEntity):
     def __init__(self, name: str, unique_id: str, initial_time: time, entry_id: str):
-        self._attr_name = name.replace("_", " ").title()
+        self._attr_name = name
         self._attr_unique_id = unique_id
         self._attr_has_entity_name = True
         self._time = initial_time
@@ -51,7 +60,7 @@ class ScheduleTimeEntity(TimeEntity, RestoreEntity):
         await super().async_added_to_hass()
         if (state := await self.async_get_last_state()) and state.state != "unknown":
             try:
-                self._time = time.fromisoformat(state.state)
+                self._time = datetime.strptime(state.state, "%H:%M:%S").time()
             except ValueError:
                 pass
 

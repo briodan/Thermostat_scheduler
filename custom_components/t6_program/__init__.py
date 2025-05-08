@@ -15,5 +15,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload T6 Program entry."""
-    unloads = await hass.config_entries.async_forward_entry_unloads(entry, ["select", "number", "time"])
-    return all(unloads)
+    unload_select = await hass.config_entries.async_forward_entry_unload(entry, "select")
+    unload_number = await hass.config_entries.async_forward_entry_unload(entry, "number")
+    unload_time = await hass.config_entries.async_forward_entry_unload(entry, "time")
+    return unload_select and unload_number and unload_time
