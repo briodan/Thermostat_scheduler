@@ -10,6 +10,7 @@ DEFAULT_TOLERANCE = 1.0
 DEFAULT_SENSOR = "sensor.none_found"
 DEFAULT_INSTANCE_NAME = "t6_program"
 
+
 class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
@@ -17,11 +18,9 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.data = {}
 
     async def async_step_user(self, user_input=None):
-        """Start config flow with instance name prompt."""
         return await self.async_step_instance_name()
 
     async def async_step_instance_name(self, user_input=None):
-        """Ask the user to enter a unique instance name."""
         if user_input:
             self.data["instance_name"] = user_input["instance_name"]
             return await self.async_step_initial_config()
@@ -30,14 +29,10 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="instance_name",
             data_schema=vol.Schema({
                 vol.Required("instance_name", default=DEFAULT_INSTANCE_NAME): str
-            }),
-            description_placeholders={
-                "intro": "Enter a unique name for this T6 program instance"
-            }
+            })
         )
 
     async def async_step_initial_config(self, user_input=None):
-        """Initial configuration with temperature and sensor setup."""
         sensors = await self._get_temp_sensor_options()
 
         if user_input:
@@ -47,7 +42,7 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         schema = vol.Schema({
             vol.Required("tolerance_cool", default=DEFAULT_TOLERANCE): vol.All(vol.Coerce(float), vol.Range(min=0.5, max=5.0)),
             vol.Required("tolerance_heat", default=DEFAULT_TOLERANCE): vol.All(vol.Coerce(float), vol.Range(min=0.5, max=5.0)),
-            vol.Required("current_sensor", default=next(iter(sensors))): vol.In(sensors),
+            vol.Required("current_sensor", default=list(sensors.keys())[0]): vol.In(sensors),
             vol.Required("current_temperature", default=DEFAULT_TEMP): vol.All(vol.Coerce(float), vol.Range(min=10, max=30)),
             vol.Required("current_target_temperature", default=DEFAULT_TEMP): vol.All(vol.Coerce(float), vol.Range(min=10, max=30)),
             vol.Required("adjusted_cool_temperature", default=DEFAULT_TEMP): vol.All(vol.Coerce(float), vol.Range(min=10, max=30)),
@@ -57,18 +52,7 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="initial_config",
-            data_schema=schema,
-            description_placeholders={
-                "intro": "Initial configuration of the T6 program",
-                "cool": "Cool Tolerance (adjusts when cooling triggers)",
-                "heat": "Heat Tolerance (adjusts when heating triggers)",
-                "sensor": "Sensor to use for current temperature monitoring",
-                "temp": "Current room temperature",
-                "target": "Desired temperature to maintain",
-                "adj_cool": "Modified target temperature used for cooling decisions",
-                "adj_heat": "Modified target temperature used for heating decisions",
-                "state": "Thermostat operational state"
-            }
+            data_schema=schema
         )
 
     async def async_step_mf_config(self, user_input=None):
@@ -81,17 +65,11 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         for i in range(1, 5):
             schema[vol.Required(f"m_f_time_{i}", default=TIME_OPTIONS[i - 1])] = vol.In(TIME_OPTIONS)
             schema[vol.Required(f"m_f_temperature_{i}", default=DEFAULT_TEMP)] = vol.All(vol.Coerce(float), vol.Range(min=10, max=30))
-            schema[vol.Required(f"m_f_sensor_{i}", default=next(iter(sensors)))] = vol.In(sensors)
+            schema[vol.Required(f"m_f_sensor_{i}", default=list(sensors.keys())[0])] = vol.In(sensors)
 
         return self.async_show_form(
             step_id="mf_config",
-            data_schema=vol.Schema(schema),
-            description_placeholders={
-                "intro": "Configure Monday–Friday schedule",
-                "time": "Each time defines a daily schedule trigger",
-                "temp": "Target temperature to apply at that time",
-                "sensor": "Sensor used for evaluating that schedule period"
-            }
+            data_schema=vol.Schema(schema)
         )
 
     async def async_step_ss_config(self, user_input=None):
@@ -107,26 +85,23 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         for i in range(1, 5):
             schema[vol.Required(f"s_s_time_{i}", default=TIME_OPTIONS[i - 1])] = vol.In(TIME_OPTIONS)
             schema[vol.Required(f"s_s_temperature_{i}", default=DEFAULT_TEMP)] = vol.All(vol.Coerce(float), vol.Range(min=10, max=30))
-            schema[vol.Required(f"s_s_sensor_{i}", default=next(iter(sensors)))] = vol.In(sensors)
+            schema[vol.Required(f"s_s_sensor_{i}", default=list(sensors.keys())[0])] = vol.In(sensors)
 
         return self.async_show_form(
             step_id="ss_config",
-            data_schema=vol.Schema(schema),
-            description_placeholders={
-                "intro": "Configure Saturday–Sunday schedule",
-                "time": "Each time defines a weekend schedule trigger",
-                "temp": "Target temperature to apply at that time",
-                "sensor": "Sensor used for evaluating that schedule period"
-            }
+            data_schema=vol.Schema(schema)
         )
 
     async def _get_temp_sensor_options(self):
         registry = async_get(self.hass)
-        return {
+        sensors = {
             e.entity_id: e.name or e.entity_id
             for e in registry.entities.values()
-            if e.domain == "sensor" and (e.device_class == "temperature" or "temperature" in e.entity_id)
-        } or {DEFAULT_SENSOR: "No temperature sensors found"}
+            if e.domain == "sensor" and ("temperature" in (e.device_class or "") or "temperature" in e.entity_id)
+        }
+        if not sensors:
+            sensors[DEFAULT_SENSOR] = "No temperature sensors found"
+        return sensors
 
     @staticmethod
     @callback
