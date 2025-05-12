@@ -1,6 +1,6 @@
 This integration/repository aims to make it simpler to use my scheduler blue print for the Honeywell T6 thermostat
 
-Features of the blueprint:
+**Features of the blueprint:**
 
 - four daily schedules for the thermostat (differant for weekday vs week-end)
 - ability to use remote sensor for the thermostat
@@ -8,7 +8,7 @@ Features of the blueprint:
 - ability to change target temperatures in the mediaum term (days/weeks) by modifying tolerance helpers
 - ability to change target temperature in the short term (this schedule interval ony) by temporarily modifying the target temperature
 
-HACS
+**HACS**
 - Install HACS if you have not already
 - Open HACS and click three dots in right corner -> Custom Repositories -> then paste https://github.com/briodan/t6_program/ in 'Repository' and choose type 'Integration' then click 'Add'
 - Now search for 'T6 Program' in HACS
@@ -17,40 +17,39 @@ HACS
 - In Home Assistant go to Settings -> Devices and Services -> Add integration -> Search for T6 and add
 - Configure the device(s)
 
-Manual Install
+**Manual Install**
 - This integration can be installed by downloading the view_assist directory into your Home Assistant /config/custom_components directory and then restart Home Assistant. We have plans to make this easier through HACS but are waiting for acceptance.
 
-How to use
-This integration will create all entities required to run the blueprint
-(TO DO) add a sample dashboard for integration entities
-(TO DO) add a sample dashboard for Thermostat control
+**How to use**
+- This integration will create all entities required to run the blueprint
+   - (TO DO) add a sample dashboard for integration entities
+   - (TO DO) add a sample dashboard for Thermostat control
+- You will be prompted to setup the initial state of the integration entities during initial setup
 
-You will be prompted to setup the initial state of the integration entities during initial setup
+**Import the blueprints**
+- Import both blueprints under Blueprints > Integration bases
+   - (TO DO) add import links
 
-Import the blueprints
-Import both blueprints under Blueprints > Integration bases
-(TO DO) add import links
+**Configure the blueprints**
+- The blueprints filter entities to only those provided by the integration for easy matching
 
-Configure the blueprints
-The blueprints filter entities to only those provided by the integration for easy matching
+**Description of entities and what they do:**
 
-Description of entities and what they do:
-
-For each of the 4 daily time intervals you need to provide:
+**For each of the 4 daily time intervals you need to provide:**
 - Time - when the new settings stats (i.e t6_program_m_f_time_1 for weekday or t6_program_s_s_time_1 for week-end)
 - Sensor - the remote sensor to use for the time interval (i.e t6_program_m_f_sensor_1 for weekday or t6_program_s_s_sensor_1 for week-end)
 - Temperature - the target temperature to use for the time interval (i.e t6_program_m_f_temperature_1 for weekday or t6_program_s_s_temperature_1 for week-end)
 
-Tolerance cool and tolerance heat
+**Tolerance cool and tolerance heat**
 - These entities offset the target temperature
     - avoids flapping for dual heat/cool systems - by default the min values are 0.5 degrees
     - allows medium term temperature adjustement by increasing the offsets
 - using the tolerances means the thermostat will never reach the target temperature it will be at most 0.5 degrees cooler/warmer
 
-Adjusted Cool and Heat Temeprature
+**Adjusted Cool and Heat Temeprature**
 - These entities are used to display in a dashboard the true target temperatures after tolerances are applied
 
-Current Sensor
+**Current Sensor**
 - This entities is used to hold the current sensor being used
     - this is used for displaying in a dashbaord
     - this is used for the run sensor blueprint to know which sensor to target
