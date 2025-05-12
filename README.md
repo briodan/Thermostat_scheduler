@@ -25,6 +25,7 @@ This integration/repository aims to make it simpler to use my scheduler blue pri
    - (TO DO) add a sample dashboard for integration entities
    - (TO DO) add a sample dashboard for Thermostat control
 - You will be prompted to setup the initial state of the integration entities during initial setup
+- the integration should allow you to setup in either C or F, but the blueprint might need additional testing for F
 
 **Import the blueprints**
 - Import both blueprints under Blueprints > Integration bases
@@ -74,7 +75,6 @@ Note this Integration is written for the T6 thermostat as such it relies on sett
 - blueprint setpoint are set to 2 degrees above target to avoid run-off (TO DO) this might change to match the target temperature
 
 **Larger TO DO:**
-- allow user to specify temeprature ranges manually for the temperature entities (will allow usage with C or F)
 - check into an other changes required to support both C and F in the integration or blueprint
 - allow user to specify thermostat name during setup and drive entity name from it (allows usage of multiple thermostats)
 - look into adjusting the setpoints to reduce the risk of run-off

@@ -4,17 +4,9 @@ from homeassistant.core import callback
 from homeassistant.helpers.entity_registry import async_get
 from .const import DOMAIN
 
-# Default values
-DEFAULT_TEMP = 20.0
 DEFAULT_SENSOR = "sensor.none_found"
 DEFAULT_TIME = "06:00"
-
-# Ranges
 TOLERANCE_MIN = 0.5
-TOLERANCE_MAX = 5.0
-M_F_TEMPERATURE_MIN = 10
-M_F_TEMPERATURE_MAX = 30
-
 
 class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
@@ -27,25 +19,53 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         default_sensor = list(sensors.keys())[0]
 
         if user_input:
+            temp_min = user_input["temp_min"]
+            temp_max = user_input["temp_max"]
+
+            if not (temp_min <= user_input["temp_default"] <= temp_max):
+                return self.async_show_form(
+                    step_id="user",
+                    data_schema=self._build_user_schema(sensors),
+                    errors={"temp_default": "default_out_of_range"}
+                )
+
+            # Store user selections
             self._data.update(user_input)
+
+            # Automatically assign other fields
+            self._data["current_temperature"] = user_input["temp_default"]
+            self._data["current_target_temperature"] = user_input["temp_default"]
+            self._data["adjusted_cool_temperature"] = user_input["temp_default"]
+            self._data["adjusted_heat_temperature"] = user_input["temp_default"]
+            self._data["thermostat_state"] = "idle"
+            tolerance_max = 10.0 if user_input["temperature_unit"] == "°F" else 5.0
+            self._data["tolerance_cool"] = 1.0
+            self._data["tolerance_heat"] = 1.0
+            self._data["tolerance_max"] = tolerance_max
+
+            self._data["current_sensor"] = user_input["current_sensor"]
+
             return await self.async_step_mf_config()
 
-        schema = vol.Schema({
-            vol.Required("tolerance_cool", default=1.0): vol.All(vol.Coerce(float), vol.Range(min=TOLERANCE_MIN, max=TOLERANCE_MAX)),
-            vol.Required("tolerance_heat", default=1.0): vol.All(vol.Coerce(float), vol.Range(min=TOLERANCE_MIN, max=TOLERANCE_MAX)),
-            vol.Required("current_sensor", default=default_sensor): vol.In(sensors),
-            vol.Required("current_temperature", default=DEFAULT_TEMP): vol.All(vol.Coerce(float), vol.Range(min=M_F_TEMPERATURE_MIN, max=M_F_TEMPERATURE_MAX)),
-            vol.Required("current_target_temperature", default=DEFAULT_TEMP): vol.All(vol.Coerce(float), vol.Range(min=M_F_TEMPERATURE_MIN, max=M_F_TEMPERATURE_MAX)),
-            vol.Required("adjusted_cool_temperature", default=DEFAULT_TEMP): vol.All(vol.Coerce(float), vol.Range(min=M_F_TEMPERATURE_MIN, max=M_F_TEMPERATURE_MAX)),
-            vol.Required("adjusted_heat_temperature", default=DEFAULT_TEMP): vol.All(vol.Coerce(float), vol.Range(min=M_F_TEMPERATURE_MIN, max=M_F_TEMPERATURE_MAX)),
-            vol.Required("thermostat_state", default="idle"): vol.In(["idle", "heat", "cool"]),
-        })
+        return self.async_show_form(step_id="user", data_schema=self._build_user_schema(sensors))
 
-        return self.async_show_form(step_id="user", data_schema=schema)
+    def _build_user_schema(self, sensors):
+        default_sensor = list(sensors.keys())[0]
+        return vol.Schema({
+            vol.Required("temperature_unit", default="°C"): vol.In(["°C", "°F"]),
+            vol.Required("temp_min"): vol.Coerce(float),
+            vol.Required("temp_max"): vol.Coerce(float),
+            vol.Required("temp_default"): vol.Coerce(float),
+            vol.Required("current_sensor", default=default_sensor): vol.In(sensors),
+        })
 
     async def async_step_mf_config(self, user_input=None):
         sensors = await self._get_temp_sensor_options()
         default_sensor = list(sensors.keys())[0]
+
+        temp_min = self._data["temp_min"]
+        temp_max = self._data["temp_max"]
+        temp_default = self._data["temp_default"]
 
         if user_input:
             self._data.update(user_input)
@@ -54,8 +74,8 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         schema = {}
         for i in range(1, 5):
             schema[vol.Required(f"m_f_time_{i}", default=DEFAULT_TIME)] = str
-            schema[vol.Required(f"m_f_temperature_{i}", default=DEFAULT_TEMP)] = vol.All(
-                vol.Coerce(float), vol.Range(min=M_F_TEMPERATURE_MIN, max=M_F_TEMPERATURE_MAX)
+            schema[vol.Required(f"m_f_temperature_{i}", default=temp_default)] = vol.All(
+                vol.Coerce(float), vol.Range(min=temp_min, max=temp_max)
             )
             schema[vol.Required(f"m_f_sensor_{i}", default=default_sensor)] = vol.In(sensors)
 
@@ -65,6 +85,10 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         sensors = await self._get_temp_sensor_options()
         default_sensor = list(sensors.keys())[0]
 
+        temp_min = self._data["temp_min"]
+        temp_max = self._data["temp_max"]
+        temp_default = self._data["temp_default"]
+
         if user_input:
             self._data.update(user_input)
             return self.async_create_entry(title="T6 Program", data=self._data)
@@ -72,8 +96,8 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         schema = {}
         for i in range(1, 5):
             schema[vol.Required(f"s_s_time_{i}", default=DEFAULT_TIME)] = str
-            schema[vol.Required(f"s_s_temperature_{i}", default=DEFAULT_TEMP)] = vol.All(
-                vol.Coerce(float), vol.Range(min=M_F_TEMPERATURE_MIN, max=M_F_TEMPERATURE_MAX)
+            schema[vol.Required(f"s_s_temperature_{i}", default=temp_default)] = vol.All(
+                vol.Coerce(float), vol.Range(min=temp_min, max=temp_max)
             )
             schema[vol.Required(f"s_s_sensor_{i}", default=default_sensor)] = vol.In(sensors)
 
