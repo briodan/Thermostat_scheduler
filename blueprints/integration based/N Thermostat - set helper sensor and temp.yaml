@@ -29,7 +29,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
-        temp_target_temp:
+        temp_current_target:
           name: Current Temp Target
           description: This helper will be updated to display the temperature target
           default: {}
@@ -279,35 +279,14 @@ blueprint:
                 integration: t6_program
 
 triggers:
-  - id: time_1
-    platform: template
-    value_template: "{{ now().strftime('%H:%M') == states('!input time_1') }}"
-  - id: time_2
-    platform: template
-    value_template: "{{ now().strftime('%H:%M') == states('!input time_2') }}"
-  - id: time_3
-    platform: template
-    value_template: "{{ now().strftime('%H:%M') == states('!input time_3') }}"
-  - id: time_4
-    platform: template
-    value_template: "{{ now().strftime('%H:%M') == states('!input time_4') }}"
-  - id: time_1_ss
-    platform: template
-    value_template: "{{ now().strftime('%H:%M') == states('!input time_1_ss') }}"
-  - id: time_2_ss
-    platform: template
-    value_template: "{{ now().strftime('%H:%M') == states('!input time_2_ss') }}"
-  - id: time_3_ss
-    platform: template
-    value_template: "{{ now().strftime('%H:%M') == states('!input time_3_ss') }}"
-  - id: time_4_ss
-    platform: template
-    value_template: "{{ now().strftime('%H:%M') == states('!input time_4_ss') }}"
+  - trigger: time_pattern
+    minutes: /1
 
 action:
   - variables:
       temp_current_sensor: !input temp_current_sensor
-      temp_target_temp: !input temp_target_temp
+      temp_current_target: !input temp_current_target
+
       sensor_1: !input sensor_1
       sensor_2: !input sensor_2
       sensor_3: !input sensor_3
@@ -316,6 +295,7 @@ action:
       sensor_2_ss: !input sensor_2_ss
       sensor_3_ss: !input sensor_3_ss
       sensor_4_ss: !input sensor_4_ss
+
       target_temp_1: !input target_temp_1
       target_temp_2: !input target_temp_2
       target_temp_3: !input target_temp_3
@@ -324,6 +304,7 @@ action:
       target_temp_2_ss: !input target_temp_2_ss
       target_temp_3_ss: !input target_temp_3_ss
       target_temp_4_ss: !input target_temp_4_ss
+
       time_1: !input time_1
       time_2: !input time_2
       time_3: !input time_3
@@ -332,73 +313,134 @@ action:
       time_2_ss: !input time_2_ss
       time_3_ss: !input time_3_ss
       time_4_ss: !input time_4_ss
+
       default_temp: !input default_temp
       default_temp_1: "{{ default_temp | float}}"
+
       now_time: "{{ now().strftime('%H:%M') }}"
       wd: "{{ now().weekday() }}"
-      t1: "{{ states(time_1) }}"
-      t2: "{{ states(time_2) }}"
-      t3: "{{ states(time_3) }}"
-      t4: "{{ states(time_4) }}"
-      t1ss: "{{ states(time_1_ss) }}"
-      t2ss: "{{ states(time_2_ss) }}"
-      t3ss: "{{ states(time_3_ss) }}"
-      t4ss: "{{ states(time_4_ss) }}"
+      is_weekend: "{{ wd >= 5 }}"
+      t1: "{{ states(time_1)[:5] }}"
+      t2: "{{ states(time_2)[:5] }}"
+      t3: "{{ states(time_3)[:5] }}"
+      t4: "{{ states(time_4)[:5] }}"
+      t1ss: "{{ states(time_1_ss)[:5] }}"
+      t2ss: "{{ states(time_2_ss)[:5] }}"
+      t3ss: "{{ states(time_3_ss)[:5] }}"
+      t4ss: "{{ states(time_4_ss)[:5] }}"
+
       current_sensor: >-
-        {%- if (now().strftime('%H:%M:%S') >= t1) and (now().strftime('%H:%M:%S') < t2) and wd < 5)-%}
-          {{ sensor_1 }}
-        {%- elif (now().strftime('%H:%M:%S') >= t2) and (now().strftime('%H:%M:%S') < t3) and wd < 5) -%}
-          {{ sensor_2  }}
-        {%- elif (now().strftime('%H:%M:%S') >= t3) and (now().strftime('%H:%M:%S') < t4) and wd < 5) -%}
-          {{ sensor_3  }}
-        {%- elif (now().strftime('%H:%M:%S') >= t4) or (now().strftime('%H:%M:%S') < t1) and wd < 5) -%}
-          {{ sensor_4 }}
-        {%- elif (now().strftime('%H:%M:%S') >= t1ss) and (now().strftime('%H:%M:%S') < t2ss) and wd >= 5) -%}
-          {{ sensor_1_ss }}
-        {%- elif (now().strftime('%H:%M:%S') >= t2ss) and (now().strftime('%H:%M:%S') < t3ss) and wd >= 5) -%}
-          {{ sensor_2_ss }}
-        {%- elif (now().strftime('%H:%M:%S') >= t3ss) and (now().strftime('%H:%M:%S') < t4ss) and wd >= 5) -%}
-          {{ sensor_3_ss }}
-        {%- elif (now().strftime('%H:%M:%S') >= t4ss) or (now().strftime('%H:%M:%S') < t1ss) and wd >= 5) -%}
-          {{ sensor_4_ss }}
-        {%- endif -%}
+        {% if is_weekend and t1ss == now_time %}
+          {{ states(sensor_1_ss) }}
+        {% elif is_weekend and t2ss == now_time %}
+          {{ states(sensor_2_ss) }}
+        {% elif is_weekend and t3ss == now_time %}
+          {{ states(sensor_3_ss) }}
+        {% elif is_weekend and t4ss == now_time %}
+          {{ states(sensor_4_ss) }}
+        {% elif not is_weekend and t1 == now_time %}
+          {{ states(sensor_1) }}
+        {% elif not is_weekend and t2 == now_time %}
+          {{ states(sensor_2) }}
+        {% elif not is_weekend and t3 == now_time %}
+          {{ states(sensor_3) }}
+        {% elif not is_weekend and t4 == now_time %}
+          {{ states(sensor_4) }}
+        {% else %}
+          ''
+        {% endif %}
+
       current_target_temp: >-
-        {%- if (now().strftime('%H:%M:%S') >= t1) and (now().strftime('%H:%M:%S') < t2) and wd < 5)-%}
-          {{ target_temp_1 }}
-        {%- elif (now().strftime('%H:%M:%S') >= t2) and (now().strftime('%H:%M:%S') < t3) and wd < 5) -%}
-          {{ target_temp_2 }}
-        {%- elif (now().strftime('%H:%M:%S') >= t3) and (now().strftime('%H:%M:%S') < t4) and wd < 5) -%}
-          {{ target_temp_3 }}
-        {%- elif (now().strftime('%H:%M:%S') >= t4) or (now().strftime('%H:%M:%S') < t1) and wd < 5) -%}
-          {{ target_temp_4 }}
-        {%- elif (now().strftime('%H:%M:%S') >= t1ss) and (now().strftime('%H:%M:%S') < t2ss) and wd >= 5) -%}
-          {{ target_temp_1_ss }}
-        {%- elif (now().strftime('%H:%M:%S') >= t2ss) and (now().strftime('%H:%M:%S') < t3ss) and wd >= 5) -%}
-          {{ target_temp_2_ss }}
-        {%- elif (now().strftime('%H:%M:%S') >= t3ss) and (now().strftime('%H:%M:%S') < t4ss) and wd >= 5) -%}
-          {{ target_temp_3_ss }}
-        {%- elif (now().strftime('%H:%M:%S') >= t4ss) or (now().strftime('%H:%M:%S') < t1ss) and wd >= 5) -%}
-          {{ target_temp_4_ss }}
-        {%- else -%}
-          {{ default_temp }}        
-        {%- endif -%}
+        {% if is_weekend and t1ss == now_time %}
+          {{ states(target_temp_1_ss) }}
+        {% elif is_weekend and t2ss == now_time %}
+          {{ states(target_temp_2_ss) }}
+        {% elif is_weekend and t3ss == now_time %}
+          {{ states(target_temp_3_ss) }}
+        {% elif is_weekend and t4ss == now_time %}
+          {{ states(target_temp_4_ss) }}
+        {% elif not is_weekend and t1 == now_time %}
+          {{ states(target_temp_1) }}
+        {% elif not is_weekend and t2 == now_time %}
+          {{ states(target_temp_2) }}
+        {% elif not is_weekend and t3 == now_time %}
+          {{ states(target_temp_3) }}
+        {% elif not is_weekend and t4 == now_time %}
+          {{ states(target_temp_4) }}
+        {% else %}
+          {{ default_temp }}
+        {% endif %}
+
+      matched_interval: >-
+        {% if is_weekend %}
+          {{ now_time in [t1ss, t2ss, t3ss, t4ss] }}
+        {% else %}
+          {{ now_time in [t1, t2, t3, t4] }}
+        {% endif %}
+
   - action: system_log.write
     data:
       message: >
-        current_sensor: {{ current_sensor }},{{"\n"}}
-        current_target_temp: {{ current_target_temp }},{{"\n"}}
+        matched_interval: {{ matched_interval }},{{"\n"}}
+        t1: {{ t1 }},{{"\n"}}
+        t2: {{ t2 }},{{"\n"}}
+        t3: {{ t3 }},{{"\n"}}
+        t4: {{ t4 }},{{"\n"}}
+        t1ss: {{ t1ss }},{{"\n"}}
+        t2ss: {{ t2ss }},{{"\n"}}
+        t3ss: {{ t3ss }},{{"\n"}}
+        t4ss: {{ t4ss }},{{"\n"}}
+        wd: {{ wd }},{{"\n"}}
+        is_weekend: {{ is_weekend }},{{"\n"}}
+        now_time: {{ now_time }},{{"\n"}}
+        temp_current_sensor: {{ temp_current_sensor }},{{"\n"}}
+        temp_current_target: {{ temp_current_target }},{{"\n"}}
+        sensor_1: {{ sensor_1 }},{{"\n"}}
+        sensor_2: {{ sensor_2 }},{{"\n"}}
+        sensor_3: {{ sensor_3 }},{{"\n"}}
+        sensor_4: {{ sensor_4 }},{{"\n"}}
+        sensor_1_ss: {{ sensor_1_ss }},{{"\n"}}
+        sensor_2_ss: {{ sensor_2_ss }},{{"\n"}}
+        sensor_3_ss: {{ sensor_3_ss }},{{"\n"}}
+        sensor_4_ss: {{ sensor_4_ss }},{{"\n"}}
+        target_temp_1: {{ target_temp_1 }},{{"\n"}}
+        target_temp_2: {{ target_temp_2 }},{{"\n"}}
+        target_temp_3: {{ target_temp_3 }},{{"\n"}}
+        target_temp_4: {{ target_temp_4 }},{{"\n"}}
+        target_temp_1_ss: {{ target_temp_1_ss }},{{"\n"}}
+        target_temp_2_ss: {{ target_temp_2_ss }},{{"\n"}}
+        target_temp_3_ss: {{ target_temp_3_ss }},{{"\n"}}
+        target_temp_4_ss: {{ target_temp_4_ss }},{{"\n"}}
         default_temp: {{ default_temp }},{{"\n"}}
+
       level: debug
       logger: blueprints.briodan.thermostat
-  - action: input_text.set_value
-    data:
-      entity_id: !input temp_current_sensor
-      value: "{{ current_sensor }}"
+
+  - choose:
+      - conditions: "{{ matched_interval }}"
+        sequence:
+          - action: select.select_option
+            target:
+              entity_id: !input temp_current_sensor
+            data:
+              option: "{{ current_sensor }}"
+          - action: number.set_value
+            target:
+              entity_id: !input temp_current_target
+            data:
+              value: "{{ current_target_temp }}"
+
+  # - action: select.select_option
+  #   target:
+  #     entity_id: !input temp_current_sensor
+  #   data:
+  #     option: "{{ current_sensor }}"
+  # - action: number.set_value
+  #   data:
+  #     value: "{{ current_target_temp }}"
+  #   target:
+  #     entity_id: !input temp_current_target
   # - service: input_text.set_value
   # data:
   # entity_id: !input temp_current_sensor
   # value: "{{ states[current_sensor].attributes.friendly_name }}"
-  - action: input_number.set_value
-    data:
-      entity_id: !input temp_target_temp
-      value: "{{ current_target_temp }}"
