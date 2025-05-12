@@ -54,26 +54,26 @@ This integration/repository aims to make it simpler to use my scheduler blue pri
     - this is used for displaying in a dashbaord
     - this is used for the run sensor blueprint to know which sensor to target
 
-Current Temperature
+**Current Temperature**
 - This entitie is used to display the current temperature of the current sensor
 (TO DO) this entity might go away in the future
 
-Current Target Temperature
+**Current Target Temperature**
 - This entity is used to told the current target temeperature
     - this is used for displaying in a dashbaord
     - this allows for short term changes to temeprature until the next scheduled time runs
 
-Thermostat State
+**Thermostat State**
 - This entity show the historical state on the termostat
 - used mostly for troubleshooting/making sure the program ran as expected
 
 Note this Integration is written for the T6 thermostat as such it relies on setting low and high set points to control the temperature and will not work with thermostats that don't have this features
 
-Additional notes:
+**Additional notes:**
 - blueprint used a default temeprature as a fallback in case there are issues with a sensors
 - blueprint setpoint are set to 2 degrees above target to avoid run-off (TO DO) this might change to match the target temperature
 
-Larger TO DO:
+**Larger TO DO:**
 - allow user to specify temeprature ranges manually for the temperature entities (will allow usage with C or F)
 - check into an other changes required to support both C and F in the integration or blueprint
 - allow user to specify thermostat name during setup and drive entity name from it (allows usage of multiple thermostats)
