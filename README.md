@@ -3,14 +3,14 @@ This integration/repository aims to make it simpler to use my scheduler blue pri
 **Features of the blueprint:**
 
 - four daily schedules for the thermostat (differant for weekday vs week-end)
-- ability to use remote sensor for the thermostat
+- ability to use remote sensors for the thermostat
 - ability to change sensors, times, target temperatures in a dashbaord
-- ability to change target temperatures in the mediaum term (days/weeks) by modifying tolerance helpers
+- ability to change target temperatures in the medium term (days/weeks) by modifying tolerance helpers
 - ability to change target temperature in the short term (this schedule interval ony) by temporarily modifying the target temperature
 
 **HACS**
 - Install HACS if you have not already
-- Open HACS and click three dots in right corner -> Custom Repositories -> then paste https://github.com/briodan/t6_program/ in 'Repository' and choose type 'Integration' then click 'Add'
+- Open HACS and click three dots in right corner -> Custom Repositories -> then paste /briodan/t6_program/ in 'Repository' and choose type 'Integration' then click 'Add'
 - Now search for 'T6 Program' in HACS
 - Click "Add" to confirm, and then click "Download" to download and install the integration Restart Home Assistant
 - Search for "T6 Program" in HACS and install then restart
@@ -21,7 +21,7 @@ This integration/repository aims to make it simpler to use my scheduler blue pri
 - This integration can be installed by downloading the view_assist directory into your Home Assistant /config/custom_components directory and then restart Home Assistant. We have plans to make this easier through HACS but are waiting for acceptance.
 
 **How to use**
-- This integration will create all entities required to run the blueprint
+- This integration will create all entities required to run the blueprints
    - (TO DO) add a sample dashboard for integration entities
    - (TO DO) add a sample dashboard for Thermostat control
 - You will be prompted to setup the initial state of the integration entities during initial setup
@@ -46,6 +46,9 @@ This integration/repository aims to make it simpler to use my scheduler blue pri
     - avoids flapping for dual heat/cool systems - by default the min values are 0.5 degrees
     - allows medium term temperature adjustement by increasing the offsets
 - using the tolerances means the thermostat will never reach the target temperature it will be at most 0.5 degrees cooler/warmer
+- tolerances will be different between C and F
+    - when configured in C range is 0.5 to 5 C
+    - when configured in F range is 0.5 to 10 F - **Need some feedback if this is approprite from people using this in F**
 
 **Adjusted Cool and Heat Temeprature**
 - These entities are used to display in a dashboard the true target temperatures after tolerances are applied
@@ -68,15 +71,24 @@ This integration/repository aims to make it simpler to use my scheduler blue pri
 - This entity show the historical state on the termostat
 - used mostly for troubleshooting/making sure the program ran as expected
 
-Note this Integration is written for the T6 thermostat as such it relies on setting low and high set points to control the temperature and will not work with thermostats that don't have this features
+**How does this run**
+- The "Thermostat - Set Sensor and Temp" blueprint 
+    - this runs every minutes (TO-DO) add frequency options
+    - if it matches one of the times set it change the current sensor and target temperature to the ones specified for the time interval
+- The "Thermostat - Run based on Sensor" blueprint
+    - runs every 1/5/10 minutes
+    - it turns on the thermostat if current sensor temperature is outside the tolerance ranges
+    - on next run it turns the thermostat off.
+    - the blueprints turns the thermostat on or off by manipulating the high and low setpoints of the thermostat
 
-**Additional notes:**
-- blueprint used a default temeprature as a fallback in case there are issues with a sensors
-- blueprint setpoint are set to 2 degrees above target to avoid run-off (TO DO) this might change to match the target temperature
+**Note this Integration is written for the T6 thermostat as such it relies on setting low and high set points to control the temperature and will not work with thermostats that don't have this features**
+
+**Fault tolerance built in**
+- Blueprints will default to a user specified default value in case a sensor is not available
+- Setpoint are only 2 degress above target temperature
 
 **Larger TO DO:**
-- check into an other changes required to support both C and F in the integration or blueprint
 - allow user to specify thermostat name during setup and drive entity name from it (allows usage of multiple thermostats)
 - look into adjusting the setpoints to reduce the risk of run-off
-- look into allowing the use of this with both T6 and Regular thermostats
+- look into allowing the use of the blueprint with both T6 and Regular thermostats
 

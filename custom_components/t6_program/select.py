@@ -5,12 +5,16 @@ from homeassistant.helpers.entity_registry import async_get
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-DOMAIN = "t6_program"
-
-
-def sanitize_instance_name(name: str) -> str:
-    return name.lower().replace(" ", "_")
-
+from .const import (
+    DOMAIN,
+    DEVICE_NAME,
+    DEVICE_MANUFACTURER,
+    DEVICE_MODEL,
+    DEVICE_ENTRY_TYPE,
+    STATE_OPTIONS,
+    DEFAULT_SENSOR,
+    STATE_DEFAULT,
+)
 
 class BaseT6Select(SelectEntity, RestoreEntity):
     def __init__(self, name: str, unique_id: str, options: list[str], initial_option: str, entry_id: str):
@@ -38,11 +42,12 @@ class BaseT6Select(SelectEntity, RestoreEntity):
     def device_info(self):
         return {
             "identifiers": {(DOMAIN, self._entry_id)},
-            "name": "T6 Program",
-            "manufacturer": "Custom",
-            "model": "T6 Scheduler",
-            "entry_type": "service",
+            "name": DEVICE_NAME,
+            "manufacturer": DEVICE_MANUFACTURER,
+            "model": DEVICE_MODEL,
+            "entry_type": DEVICE_ENTRY_TYPE,
         }
+
 
 
 async def async_setup_entry(
@@ -59,7 +64,7 @@ async def async_setup_entry(
         if e.domain == "sensor" and (
             e.device_class == "temperature" or "temperature" in e.entity_id
         )
-    ]) or ["sensor.none_found"]
+    ]) or [DEFAULT_SENSOR]
     default_sensor = temp_sensors[0]
 
     for i in range(1, 5):
@@ -76,10 +81,14 @@ async def async_setup_entry(
         BaseT6Select(name="Current Sensor", unique_id="current_sensor", options=temp_sensors, initial_option=selected, entry_id=entry.entry_id)
     )
 
-    state_options = ["idle", "heat", "cool"]
-    selected = entry.data.get("thermostat_state", "idle")
     entities.append(
-        BaseT6Select(name="Thermostat State", unique_id="thermostat_state", options=state_options, initial_option=selected, entry_id=entry.entry_id)
+        BaseT6Select(
+            name="Thermostat State",
+            unique_id="thermostat_state",
+            options=STATE_OPTIONS,
+            initial_option=STATE_DEFAULT,
+            entry_id=entry.entry_id,
+        )
     )
 
     async_add_entities(entities, update_before_add=True)

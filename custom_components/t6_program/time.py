@@ -5,8 +5,15 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-DOMAIN = "t6_program"
-DEFAULT_TIME_STRING = "06:00"
+from .const import (
+    DOMAIN,
+    DEFAULT_TIME_STRING,
+    DEVICE_NAME,
+    DEVICE_MANUFACTURER,
+    DEVICE_MODEL,
+    DEVICE_ENTRY_TYPE,
+)
+
 
 
 def parse_time_string(s: str) -> time:
@@ -68,8 +75,8 @@ class T6ProgramTimeEntity(TimeEntity, RestoreEntity):
     def device_info(self):
         return {
             "identifiers": {(DOMAIN, self._entry_id)},
-            "name": "T6 Program",
-            "manufacturer": "Custom",
-            "model": "T6 Scheduler",
-            "entry_type": "service",
+            "name": DEVICE_NAME,
+            "manufacturer": DEVICE_MANUFACTURER,
+            "model": DEVICE_MODEL,
+            "entry_type": DEVICE_ENTRY_TYPE,
         }

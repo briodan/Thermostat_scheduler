@@ -2,11 +2,16 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers.entity_registry import async_get
-from .const import DOMAIN
 
-DEFAULT_SENSOR = "sensor.none_found"
-DEFAULT_TIME = "06:00"
-TOLERANCE_MIN = 0.5
+from .const import (
+    DOMAIN,
+    DEFAULT_SENSOR,
+    DEFAULT_TIME_STRING,
+    DEFAULT_TOLERANCE_MAX_C, 
+    DEFAULT_TOLERANCE_MAX_F,
+    UNIT_CELSIUS,
+    UNIT_FARENHEIT,
+)
 
 class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
@@ -37,12 +42,8 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self._data["current_target_temperature"] = user_input["temp_default"]
             self._data["adjusted_cool_temperature"] = user_input["temp_default"]
             self._data["adjusted_heat_temperature"] = user_input["temp_default"]
-            self._data["thermostat_state"] = "idle"
-            tolerance_max = 10.0 if user_input["temperature_unit"] == "°F" else 5.0
-            self._data["tolerance_cool"] = 1.0
-            self._data["tolerance_heat"] = 1.0
+            tolerance_max = DEFAULT_TOLERANCE_MAX_F if user_input["temperature_unit"] == UNIT_FARENHEIT else DEFAULT_TOLERANCE_MAX_C
             self._data["tolerance_max"] = tolerance_max
-
             self._data["current_sensor"] = user_input["current_sensor"]
 
             return await self.async_step_mf_config()
@@ -52,7 +53,7 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def _build_user_schema(self, sensors):
         default_sensor = list(sensors.keys())[0]
         return vol.Schema({
-            vol.Required("temperature_unit", default="°C"): vol.In(["°C", "°F"]),
+            vol.Required("temperature_unit", default= UNIT_CELSIUS): vol.In([UNIT_CELSIUS, UNIT_FARENHEIT]),
             vol.Required("temp_min"): vol.Coerce(float),
             vol.Required("temp_max"): vol.Coerce(float),
             vol.Required("temp_default"): vol.Coerce(float),
@@ -73,7 +74,7 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         schema = {}
         for i in range(1, 5):
-            schema[vol.Required(f"m_f_time_{i}", default=DEFAULT_TIME)] = str
+            schema[vol.Required(f"m_f_time_{i}", default=DEFAULT_TIME_STRING)] = str
             schema[vol.Required(f"m_f_temperature_{i}", default=temp_default)] = vol.All(
                 vol.Coerce(float), vol.Range(min=temp_min, max=temp_max)
             )
@@ -95,7 +96,7 @@ class T6ProgramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         schema = {}
         for i in range(1, 5):
-            schema[vol.Required(f"s_s_time_{i}", default=DEFAULT_TIME)] = str
+            schema[vol.Required(f"s_s_time_{i}", default=DEFAULT_TIME_STRING)] = str
             schema[vol.Required(f"s_s_temperature_{i}", default=temp_default)] = vol.All(
                 vol.Coerce(float), vol.Range(min=temp_min, max=temp_max)
             )

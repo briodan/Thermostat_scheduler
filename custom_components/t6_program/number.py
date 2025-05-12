@@ -4,17 +4,21 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-DOMAIN = "t6_program"
-
-# Step values (fixed as per your requirement)
-STEP_TEMP = 0.01
-STEP_TOLERANCE = 0.5
-
-# Tolerance configuration (still hardcoded)
-DEFAULT_TOLERANCE = 1.0
-TOLERANCE_MIN = 0.5
-TOLERANCE_MAX = 5.0
-
+from .const import (
+    DOMAIN,
+    DEVICE_NAME,
+    DEVICE_MANUFACTURER,
+    DEVICE_MODEL,
+    DEVICE_ENTRY_TYPE,
+    DEFAULT_TOLERANCE,
+    DEFAULT_TOLERANCE_MIN,
+    DEFAULT_TOLERANCE_MAX_C, 
+    DEFAULT_TOLERANCE_MAX_F,
+    STEP_TOLERANCE,
+    STEP_TEMP,
+    UNIT_CELSIUS,
+    UNIT_FARENHEIT,
+)
 
 class BaseT6Number(NumberEntity, RestoreEntity):
     def __init__(
@@ -58,12 +62,11 @@ class BaseT6Number(NumberEntity, RestoreEntity):
     def device_info(self):
         return {
             "identifiers": {(DOMAIN, self._entry_id)},
-            "name": "T6 Program",
-            "manufacturer": "Custom",
-            "model": "T6 Scheduler",
-            "entry_type": "service"
+            "name": DEVICE_NAME,
+            "manufacturer": DEVICE_MANUFACTURER,
+            "model": DEVICE_MODEL,
+            "entry_type": DEVICE_ENTRY_TYPE,
         }
-
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     entities = []
@@ -72,7 +75,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     temp_min = entry.data["temp_min"]
     temp_max = entry.data["temp_max"]
     temp_default = entry.data["temp_default"]
-    unit = entry.data.get("temperature_unit", "°C")
+    unit = entry.data.get("temperature_unit", UNIT_CELSIUS)
+
 
     # Scheduled temperature slots
     for i in range(1, 5):
@@ -91,12 +95,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
                     unit=unit
                 )
             )
+    
+    tolerance_max = entry.data.get(
+    "tolerance_max",
+    DEFAULT_TOLERANCE_MAX_F if unit == UNIT_FARENHEIT else DEFAULT_TOLERANCE_MAX_C,
+)
 
     # Global numeric configuration entities
     fixed_ranges = {
         # Tolerances: hardcoded ranges
-        "tolerance_cool": (entry.data["tolerance_cool"], TOLERANCE_MIN, entry.data.get("tolerance_max", 5.0), STEP_TOLERANCE),
-        "tolerance_heat": (entry.data["tolerance_heat"], TOLERANCE_MIN, entry.data.get("tolerance_max", 5.0), STEP_TOLERANCE),
+        "tolerance_cool": (DEFAULT_TOLERANCE, DEFAULT_TOLERANCE_MIN, tolerance_max, STEP_TOLERANCE),
+        "tolerance_heat": (DEFAULT_TOLERANCE, DEFAULT_TOLERANCE_MIN, tolerance_max, STEP_TOLERANCE),
 
         # Temperatures: user-defined limits
         "current_temperature": (entry.data["current_temperature"], temp_min, temp_max, STEP_TEMP),

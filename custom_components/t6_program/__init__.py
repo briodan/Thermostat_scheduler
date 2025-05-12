@@ -1,7 +1,6 @@
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-
-DOMAIN = "t6_program"
+from .const import DOMAIN, PLATFORMS
 
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the T6 Program component."""
@@ -10,7 +9,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up T6 Program from a config entry."""
     # Properly await platform setups
-    await hass.config_entries.async_forward_entry_setups(entry, ["select", "number", "time"])
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
