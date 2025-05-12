@@ -9,15 +9,16 @@ Features of the blueprint:
 - ability to change target temperature in the short term (this schedule interval ony) by temporarily modifying the target temperature
 
 HACS
-Install HACS if you have not already
-Open HACS and click three dots in right corner -> Custom Repositories -> then paste https://github.com/briodan/t6_program/ in 'Repository' and choose type 'Integration' then click 'Add'
-Now search for 'T6 Program' in HACS
-Click "Add" to confirm, and then click "Download" to download and install the integration Restart Home Assistant
-Search for "T6 Program" in HACS and install then restart
-In Home Assistant go to Settings -> Devices and Services -> Add integration -> Search for T6 and add
-Configure the device(s)
+- Install HACS if you have not already
+- Open HACS and click three dots in right corner -> Custom Repositories -> then paste https://github.com/briodan/t6_program/ in 'Repository' and choose type 'Integration' then click 'Add'
+- Now search for 'T6 Program' in HACS
+- Click "Add" to confirm, and then click "Download" to download and install the integration Restart Home Assistant
+- Search for "T6 Program" in HACS and install then restart
+- In Home Assistant go to Settings -> Devices and Services -> Add integration -> Search for T6 and add
+- Configure the device(s)
+
 Manual Install
-This integration can be installed by downloading the view_assist directory into your Home Assistant /config/custom_components directory and then restart Home Assistant. We have plans to make this easier through HACS but are waiting for acceptance.
+- This integration can be installed by downloading the view_assist directory into your Home Assistant /config/custom_components directory and then restart Home Assistant. We have plans to make this easier through HACS but are waiting for acceptance.
 
 How to use
 This integration will create all entities required to run the blueprint
