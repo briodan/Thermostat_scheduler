@@ -1,6 +1,6 @@
 blueprint:
-  name: thermostat - set helper sensor and temp
-  description: thermostat - set helper sensor and temp
+  name: T6 - set sensor and temp
+  description: T6 - set sensor and temp
   domain: automation
   homeassistant:
     min_version: 2024.10.0

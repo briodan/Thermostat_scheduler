@@ -1,6 +1,6 @@
 blueprint:
-  name: thermostat run based on sensor
-  description: Set display helpers based on remote sensor and time of day. the automation will turn run on the interval specified in frequency and turn on the thermostat.
+  name: T6 run based on sensor
+  description: T6 run based on sensor
   domain: automation
   homeassistant:
     min_version: 2024.10.0
