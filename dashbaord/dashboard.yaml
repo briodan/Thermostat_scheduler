@@ -1,0 +1,171 @@
+views:
+  - type: sections
+    max_columns: 4
+    title: Thermostat
+    path: thermostat
+    sections:
+      - type: grid
+        cards:
+          - type: custom:mushroom-climate-card
+            entity: climate.gentt
+            name: Thermostat
+            show_temperature_control: true
+            fill_container: false
+            hvac_modes:
+              - heat
+              - cool
+              - 'off'
+              - heat_cool
+            layout_options:
+              grid_columns: 4
+              grid_rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.t6_program_current_sensor
+            primary: Target Room
+            icon: mdi:temperature-celsius
+            secondary: >-
+              {{ state_attr(states('select.t6_program_current_sensor'),
+              'friendly_name') | replace('Temperature', '') | replace('Sensor',
+              '')}}
+            tap_action:
+              action: more-info
+          - type: custom:mushroom-entity-card
+            entity: number.t6_program_current_temperature
+            name: Current Temp
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: number.t6_program_adjusted_heat_temperature
+                name: Heat to
+                icon_type: none
+                fill_container: true
+              - type: custom:mushroom-number-card
+                entity: number.t6_program_current_target_temperature
+                name: Target
+                icon_type: none
+                display_mode: buttons
+                secondary_info: none
+              - type: custom:mushroom-entity-card
+                entity: number.t6_program_adjusted_cool_temperature
+                name: Cool to
+                icon_type: none
+                fill_container: true
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-number-card
+                    entity: number.t6_program_tolerance_heat
+                    name: Heat Mode
+                    display_mode: buttons
+                  - name: Cool Mode
+                    type: custom:mushroom-number-card
+                    entity: number.t6_program_tolerance_cool
+                    display_mode: buttons
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Thermo Automation
+                secondary: '{{ states(''automation.thermostat_run_based_on_sensor'') }}'
+                icon: mdi:thermometer-auto
+                entity: automation.thermostat_run_based_on_sensor
+                tap_action:
+                  action: toggle
+                icon_color: >-
+                  {% if is_state("automation.thermostat_run_based_on_sensor",
+                  "on") %}
+
+                  orange 
+
+                  {% endif %}
+                layout: horizontal
+              - type: custom:mushroom-entity-card
+                entity: switch.house_fan
+                icon: mdi:fan
+                tap_action:
+                  action: toggle
+                name: House Fan
+          - type: history-graph
+            entities:
+              - entity: select.t6_program_thermostat_state
+                name: T6 State
+              - entity: switch.house_fan
+                name: House Fan
+            hours_to_show: 3
+  - title: Thermostat Setup
+    sections:
+      - type: grid
+        cards:
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              include:
+                - entity_id: /m_f.*1/
+              exclude: []
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              include:
+                - entity_id: /m_f.*2/
+              exclude: []
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              include:
+                - entity_id: /m_f.*3/
+              exclude: []
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              include:
+                - entity_id: /m_f.*4/
+              exclude: []
+      - type: grid
+        cards:
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              include:
+                - entity_id: /s_s_.*1/
+              exclude: []
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              include:
+                - entity_id: /s_s_.*2/
+              exclude: []
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              include:
+                - entity_id: /s_s_.*3/
+              exclude: []
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              include:
+                - entity_id: /s_s_.*4/
+              exclude: []
+      - type: grid
+        cards:
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              include:
+                - entity_id: ^number.*(?:cool|heat)
+                - entity_id: /adjusted/
+                - entity_id: /current.*
+                - entity_id: ^select.*state*
+              exclude: []
+    type: sections
+    max_columns: 4
+    cards: []

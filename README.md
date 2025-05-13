@@ -1,9 +1,24 @@
 This integration/repository aims to make it simpler to use my scheduler blue print for the Honeywell T6 thermostat
 
+This project started as a way to better manage my own T6 thermostat with the following requirements
+- Wanted to be able to have the thermostat run based on remote sensor (the default location of thermostats in most homes mine included is not ideal)
+- Wanted to be able to switch the remote sensor based on time of day which coresponds with different places people find themselves in the house
+This lead to the development of the first blueprint - link
+- while that worked i found that i needed to make slight changes to the programs especially in spring/fall to adjust temperature variations
+This lead to the development of the second set of blueprint (now split into two)
+- This allows to short term changes of temperature (during current time interval)
+- These blueprint had a bit of popularity from others but were missing some key features
+    - did not work for people using F as the temperature unit
+    - the many helpers that needed to be setup made it confusing to setup
+
+So now we are here:
+- all the previously manually created helpers are created automatically by the integration
+- integration and blueprint handle both C and F
+
 **Features of the blueprint:**
 
 - four daily schedules for the thermostat (differant for weekday vs week-end)
-- ability to use remote sensors for the thermostat
+- ability to use remote sensors for the thermostat for each schedule
 - ability to change sensors, times, target temperatures in a dashbaord
 - ability to change target temperatures in the medium term (days/weeks) by modifying tolerance helpers
 - ability to change target temperature in the short term (this schedule interval ony) by temporarily modifying the target temperature
@@ -80,6 +95,12 @@ This integration/repository aims to make it simpler to use my scheduler blue pri
     - it turns on the thermostat if current sensor temperature is outside the tolerance ranges
     - on next run it turns the thermostat off.
     - the blueprints turns the thermostat on or off by manipulating the high and low setpoints of the thermostat
+
+**A Sample 2 page dashboard is included**
+- copy and paste to contents of the file in the dashboard raw configuration editor
+- requires the following addistional cards:
+    - Mushroom Cards
+    - Auto Entities
 
 **Note this Integration is written for the T6 thermostat as such it relies on setting low and high set points to control the temperature and will not work with thermostats that don't have this features**
 
