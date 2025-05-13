@@ -1,13 +1,13 @@
 blueprint:
-  name: T6 run based on sensor
-  description: T6 run based on sensor
+  name: T6 - run based on sensor
+  description: T6 - run based on sensor
   domain: automation
   homeassistant:
     min_version: 2024.10.0
   input:
     frequency:
       name: Frequency
-      description: how often to check sensor status? 1, 5 or 10 minues. 1 min should be used for testing purposed with a generic thermostat
+      description: how often to check sensor status? 1, 5 or 10 minues. 1 min should be used for testing purposes with a generic thermostat
       selector:
         select:
           options:
@@ -23,11 +23,12 @@ blueprint:
             - domain: climate
     error_boolean_helper:
       name: error_boolean_helper
-      description: Select the error testing helper
+      description: Select the T6 State entity
       selector:
         entity:
           filter:
             integration: t6_program
+            domain: select
     cool_tolerance_helper:
       name: Tolerance for cooling
       description: Precision for heating target, when heating it will cause the thermostat to stop short of target temperature by this value. If target temp is 20 and this is set to 1 it will heat to 19.
@@ -36,6 +37,7 @@ blueprint:
         entity:
           filter:
             integration: t6_program
+            domain: number
     heat_tolerance_helper:
       name: Tolerance for heating
       description: Precision for cooling target, when cooling it will cause the thermostat to stop short of target temperature by this value. If target temp is 20 and this is set to 1 it will cool to 21.
@@ -44,46 +46,52 @@ blueprint:
         entity:
           filter:
             integration: t6_program
+            domain: number
     current_sensor_helper:
       name: Current Temp Sensor
-      description: This helper will be updated to display the current temp sensor
+      description: This entity will be updated to display the current temp sensor
       default: {}
       selector:
         entity:
           filter:
             integration: t6_program
+            domain: select
     current_temp_helper:
       name: Current Temperature
-      description: This helper will be updated to display the current temperature when the automation last ran
+      description: This entity will be updated to display the current temperature when the automation last ran
       default: {}
       selector:
         entity:
           filter:
             integration: t6_program
+            domain: number
     target_temp_helper:
       name: Current Temp Target
-      description: This helper will be updated to display the temperature target
+      description: This entity will be updated to display the temperature target
       default: {}
       selector:
         entity:
           filter:
             integration: t6_program
+            domain: number
     adjusted_temp_cool_helper:
       name: Adjusted Temp Cool
-      description: This helper will be updated to display the adjusted cool temperature target
+      description: This entity will be updated to display the adjusted cool temperature target
       default: {}
       selector:
         entity:
           filter:
             integration: t6_program
+            domain: number
     adjusted_temp_heat_helper:
       name: Adjusted Temp Heat
-      description: This helper will be updated to display the adjusted heat temperature target
+      description: This entity will be updated to display the adjusted heat temperature target
       default: {}
       selector:
         entity:
           filter:
             integration: t6_program
+            domain: number
 
 triggers:
   - trigger: time_pattern
@@ -103,7 +111,7 @@ actions:
       current_temp_helper: !input current_temp_helper
       target_temp_helper: !input target_temp_helper
 
-      target_temp_float: "{{ states(target_temp_helper) | float }}"
+      target_temp_float: "{{ states(target_temp_helper) }}"
       current_sensor: "{{ states(current_sensor_helper) }}"
       current_temp_float: "{{ states(current_sensor) }}"
 
@@ -140,32 +148,17 @@ actions:
     target:
       entity_id: !input current_temp_helper
 
-  # - action: input_number.set_value
-  #   data:
-  #     entity_id: !input current_temp_helper
-  #     value: "{{ current_temp_float }}"
-
   - action: number.set_value
     data:
       value: "{{ adjusted_cool }}"
     target:
       entity_id: !input adjusted_temp_cool_helper
 
-  # - action: input_number.set_value
-  #   data:
-  #     entity_id: !input adjusted_temp_cool_helper
-  #     value: "{{ adjusted_cool }}"
-
   - action: number.set_value
     data:
       value: "{{ adjusted_heat }}"
     target:
       entity_id: !input adjusted_temp_heat_helper
-
-  # - action: input_number.set_value
-  #   data:
-  #     entity_id: !input adjusted_temp_heat_helper
-  #     value: "{{ adjusted_heat }}"
 
   - choose:
       - conditions:

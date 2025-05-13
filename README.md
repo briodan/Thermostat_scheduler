@@ -3,8 +3,10 @@ This integration/repository aims to make it simpler to use my scheduler blue pri
 This project started as a way to better manage my own T6 thermostat with the following requirements
 - Wanted to be able to have the thermostat run based on remote sensor (the default location of thermostats in most homes mine included is not ideal)
 - Wanted to be able to switch the remote sensor based on time of day which coresponds with different places people find themselves in the house
+
 This lead to the development of the first blueprint - link
 - while that worked i found that i needed to make slight changes to the programs especially in spring/fall to adjust temperature variations
+
 This lead to the development of the second set of blueprint (now split into two)
 - This allows to short term changes of temperature (during current time interval)
 - These blueprint had a bit of popularity from others but were missing some key features

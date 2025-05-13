@@ -11,32 +11,44 @@ blueprint:
       description: Global Settings
       collapsed: true
       input:
+        frequency:
+          name: Frequency
+          description: how often to check sensor status? 1, 5 or 10 minues. 1 min should be used for testing purposed with a generic thermostat
+          selector:
+            select:
+              options:
+                - /1
+                - /5
+                - /10
+                - /15
+                - /30
         default_temp:
           name: default temperature
           description: in case of issues with sensors it will default to this value
           default:
           selector:
             number:
-              min: 10
-              max: 25
+              min: 1
+              max: 150
               step: 1
-              unit_of_measurement: "°C"
         temp_current_sensor:
           name: Current Temp Sensor
-          description: This helper will be updated to display the current temp sensor
+          description: This entity will be updated to display the current temp sensor
           default: {}
           selector:
             entity:
               filter:
                 integration: t6_program
+                domain: select
         temp_current_target:
           name: Current Temp Target
-          description: This helper will be updated to display the temperature target
+          description: This entity will be updated to display the temperature target
           default: {}
           selector:
             entity:
               filter:
                 integration: t6_program
+                domain: number
     time_1_section:
       name: 1st Time interval settings
       icon: mdi:clock
@@ -51,6 +63,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: time
         target_temp_1:
           name: M-F first target temperature
           description: the thermostat will heat to target sensor 1 temp minus heat tolerance setting , or cool to sensor 1 temp plus cool tolerance setting  on Monday to Friday
@@ -59,6 +72,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: number
         sensor_1:
           name: M-F first sensor
           description: first sensor to use for temperature on Monday to Friday
@@ -67,6 +81,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: select
     time_2_section:
       name: 2nd Time interval settings
       icon: mdi:clock
@@ -81,6 +96,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: time
         target_temp_2:
           name: M-F second target temperature
           description: the thermostat will heat to target sensor 2 temp minus heat tolerance setting , or cool to sensor 2 temp plus cool tolerance setting on Monday to Friday
@@ -89,6 +105,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: number
         sensor_2:
           name: M-F second sensor
           description: second sensor to use for temperature on Monday to Friday
@@ -97,6 +114,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: select
     time_3_section:
       name: 3rd Time interval settings
       icon: mdi:clock
@@ -111,6 +129,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: time
         target_temp_3:
           name: M-F third target temperature
           description: the thermostat will heat to target sensor 3 temp minus heat tolerance setting, or cool to sensor 3 temp plus cool tolerance setting on Monday to Friday
@@ -119,6 +138,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: number
         sensor_3:
           name: M-F third sensor
           description: third sensor to use for temperature on Monday to Friday
@@ -127,6 +147,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: select
     time_4_section:
       name: 4th Time interval settings
       icon: mdi:clock
@@ -141,6 +162,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: time
         target_temp_4:
           name: M-F fourth target temperature
           description: the thermostat will heat to target sensor 4 temp minus heat tolerance setting, or cool to sensor 4 temp plus cool tolerance setting on Monday to Friday
@@ -149,6 +171,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: number
         sensor_4:
           name: M-F fourth sensor
           description: fourth sensor to use for temperature on Monday to Friday
@@ -157,6 +180,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: select
     time_1_ss_section:
       name: 1st Time interval settings SS
       icon: mdi:clock
@@ -171,6 +195,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: time
         target_temp_1_ss:
           name: S-S first target temperature
           description: the thermostat will heat to target sensor 1 temp minus heat tolerance setting, or cool to sensor 1 temp plus cool tolerance setting on Saturday and Sunday
@@ -179,6 +204,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: number
         sensor_1_ss:
           name: S-S first sensor
           description: first sensor to use for temperature on Saturday and Sunday
@@ -187,6 +213,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: select
     time_2_ss_section:
       name: 2nd Time interval settings SS
       icon: mdi:clock
@@ -201,6 +228,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: time
         target_temp_2_ss:
           name: S-S second target temperature
           description: the thermostat will heat to target sensor 2 temp minus heat tolerance setting, or cool to sensor 2 temp plus cool tolerance setting on Saturday and Sunday
@@ -209,6 +237,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: number
         sensor_2_ss:
           name: S-S second sensor
           description: second sensor to use for temperature on Saturday and Sunday
@@ -217,6 +246,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: select
     time_3_ss_section:
       name: 3rd Time interval settings SS
       icon: mdi:clock
@@ -231,6 +261,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: time
         target_temp_3_ss:
           name: S-S third target temperature
           description: the thermostat will heat to target sensor 3 temp minus heat tolerance setting, or cool to sensor 3 temp plus cool tolerance setting on Saturday and Sunday
@@ -239,6 +270,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: number
         sensor_3_ss:
           name: S-S third sensor
           description: third sensor to use for temperature on Saturday and Sunday
@@ -247,6 +279,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: select
     time_4_ss_section:
       name: 4th Time interval settings SS
       icon: mdi:clock
@@ -261,6 +294,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: time
         target_temp_4_ss:
           name: S-S fourth target temperature
           description: the thermostat will heat to target sensor 4 temp minus heat tolerance setting, or cool to sensor 4 temp plus cool tolerance setting on Saturday and Sunday
@@ -269,6 +303,7 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: number
         sensor_4_ss:
           name: S-S fourth sensor
           description: fourth sensor to use for temperature on Saturday and Sunday
@@ -277,10 +312,12 @@ blueprint:
             entity:
               filter:
                 integration: t6_program
+                domain: select
 
 triggers:
+
   - trigger: time_pattern
-    minutes: /1
+    minutes: !input frequency
 
 action:
   - variables:
@@ -429,18 +466,3 @@ action:
               entity_id: !input temp_current_target
             data:
               value: "{{ current_target_temp }}"
-
-  # - action: select.select_option
-  #   target:
-  #     entity_id: !input temp_current_sensor
-  #   data:
-  #     option: "{{ current_sensor }}"
-  # - action: number.set_value
-  #   data:
-  #     value: "{{ current_target_temp }}"
-  #   target:
-  #     entity_id: !input temp_current_target
-  # - service: input_text.set_value
-  # data:
-  # entity_id: !input temp_current_sensor
-  # value: "{{ states[current_sensor].attributes.friendly_name }}"
