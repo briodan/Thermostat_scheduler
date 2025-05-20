@@ -1,14 +1,3 @@
-[![Static Badge](https://img.shields.io/badge/HACS-Custom-41BDF5?style=for-the-badge&logo=homeassistantcommunitystore&logoColor=white)](https://github.com/hacs/integration) 
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/briodan/T6_program/total?style=for-the-badge)
-![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/briodan/T6_program?style=for-the-badge) [![Discord](https://img.shields.io/discord/1337028866643857429?style=for-the-badge&logo=discord&logoColor=white&label=Discord&color=7289da)](https://discord.gg/rsUHAW3DKz)
-
-
-
-![GitHub Release Date](https://img.shields.io/github/release-date-pre/briodan/T6_program?style=for-the-badge&label=Latest%20Beta%20Release) [![GitHub Release](https://img.shields.io/github/v/release/briodan/T6_program?include_prereleases&style=for-the-badge)](https://github.com/briodan/T6_program/releases)
-
-![GitHub Release Date](https://img.shields.io/github/release-date/briodan/T6_program?style=for-the-badge&label=Latest%20Release) [![GitHub Release](https://img.shields.io/github/v/release/briodan/T6_program?style=for-the-badge)](https://github.com/briodan/T6_program/releases)
-
-
 This integration/repository aims to make it simpler to use my scheduler blue print for the Honeywell T6 thermostat
 
 This project started as a way to better manage my own T6 thermostat with the following requirements
