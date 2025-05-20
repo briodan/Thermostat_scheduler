@@ -1,21 +1,34 @@
+[![Static Badge](https://img.shields.io/badge/HACS-Custom-41BDF5?style=for-the-badge&logo=homeassistantcommunitystore&logoColor=white)](https://github.com/hacs/integration) 
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/briodan/T6_program/total?style=for-the-badge)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/briodan/T6_program?style=for-the-badge) [![Discord](https://img.shields.io/discord/1337028866643857429?style=for-the-badge&logo=discord&logoColor=white&label=Discord&color=7289da)](https://discord.gg/rsUHAW3DKz)
+
+
+
+![GitHub Release Date](https://img.shields.io/github/release-date-pre/briodan/T6_program?style=for-the-badge&label=Latest%20Beta%20Release) [![GitHub Release](https://img.shields.io/github/v/release/briodan/T6_program?include_prereleases&style=for-the-badge)](https://github.com/briodan/T6_program/releases)
+
+![GitHub Release Date](https://img.shields.io/github/release-date/briodan/T6_program?style=for-the-badge&label=Latest%20Release) [![GitHub Release](https://img.shields.io/github/v/release/briodan/T6_program?style=for-the-badge)](https://github.com/briodan/T6_program/releases)
+
+
 This integration/repository aims to make it simpler to use my scheduler blue print for the Honeywell T6 thermostat
 
 This project started as a way to better manage my own T6 thermostat with the following requirements
 - Wanted to be able to have the thermostat run based on remote sensor (the default location of thermostats in most homes mine included is not ideal)
 - Wanted to be able to switch the remote sensor based on time of day which coresponds with different places people find themselves in the house
 
-This lead to the development of the first blueprint - link
+This lead to the development of the first blueprint - [link](https://gist.github.com/briodan/c4a25ecb376df7ae7995a164100a53a3)
 - while that worked i found that i needed to make slight changes to the programs especially in spring/fall to adjust temperature variations
 
-This lead to the development of the second set of blueprint (now split into two)
+This lead to the development of the second set of [blueprints](https://github.com/briodan/T6_program/tree/main/blueprints/original) (now split into two)
 - This allows to short term changes of temperature (during current time interval)
 - These blueprint had a bit of popularity from others but were missing some key features
     - did not work for people using F as the temperature unit
     - the many helpers that needed to be setup made it confusing to setup
 
+During the last few years i shared my blueprints in various places and the feedback i got was the extensive use of helpers could be confusing and it did not support temperature settings in both Celsius and Fahrenheit.
+
 So now we are here:
 - all the previously manually created helpers are created automatically by the integration
-- integration and blueprint handle both C and F
+- integration and blueprint handles temperature in either Celsius or Fahrenheit
 
 **Features of the blueprint:**
 

@@ -14,8 +14,8 @@ from .const import (
     DEFAULT_TOLERANCE_MIN,
     DEFAULT_TOLERANCE_MAX_C, 
     DEFAULT_TOLERANCE_MAX_F,
-    STEP_TOLERANCE,
-    STEP_TEMP,
+    STEP_MAJOR,
+    STEP_MINOR,
     UNIT_CELSIUS,
     UNIT_FARENHEIT,
 )
@@ -90,7 +90,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
                     default=val,
                     min_v=temp_min,
                     max_v=temp_max,
-                    step=STEP_TEMP,
+                    step=STEP_MAJOR,
                     entry_id=entry.entry_id,
                     unit=unit
                 )
@@ -104,14 +104,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     # Global numeric configuration entities
     fixed_ranges = {
         # Tolerances: hardcoded ranges
-        "tolerance_cool": (DEFAULT_TOLERANCE, DEFAULT_TOLERANCE_MIN, tolerance_max, STEP_TOLERANCE),
-        "tolerance_heat": (DEFAULT_TOLERANCE, DEFAULT_TOLERANCE_MIN, tolerance_max, STEP_TOLERANCE),
+        "tolerance_cool": (DEFAULT_TOLERANCE, DEFAULT_TOLERANCE_MIN, tolerance_max, STEP_MAJOR),
+        "tolerance_heat": (DEFAULT_TOLERANCE, DEFAULT_TOLERANCE_MIN, tolerance_max, STEP_MAJOR),
 
         # Temperatures: user-defined limits
-        "current_temperature": (entry.data["current_temperature"], temp_min, temp_max, STEP_TEMP),
-        "current_target_temperature": (entry.data["current_target_temperature"], temp_min, temp_max, STEP_TEMP),
-        "adjusted_cool_temperature": (entry.data["adjusted_cool_temperature"], temp_min, temp_max, STEP_TEMP),
-        "adjusted_heat_temperature": (entry.data["adjusted_heat_temperature"], temp_min, temp_max, STEP_TEMP),
+        "current_temperature": (entry.data["current_temperature"], temp_min, temp_max, STEP_MINOR),
+        "current_target_temperature": (entry.data["current_target_temperature"], temp_min, temp_max, STEP_MAJOR),
+        "adjusted_cool_temperature": (entry.data["adjusted_cool_temperature"], temp_min, temp_max, STEP_MINOR),
+        "adjusted_heat_temperature": (entry.data["adjusted_heat_temperature"], temp_min, temp_max, STEP_MINOR),
     }
 
     for key, (default, min_v, max_v, step) in fixed_ranges.items():
