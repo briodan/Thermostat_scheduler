@@ -7,46 +7,65 @@ blueprint:
   input:
     frequency:
       name: Frequency
-      description: how often to check sensor status? 1, 5 or 10 minues. 1 min should be used for testing purposes with a generic thermostat
+      description:
+        how often to check sensor status? 1, 5 or 10 minues. 1 min should
+        be used for testing purposes with a generic thermostat
       selector:
         select:
           options:
             - /1
             - /5
             - /10
+          sort: false
+          custom_value: false
+          multiple: false
     thermostat:
       name: Thermostat
       description: Select the Thermostat
       selector:
         entity:
           filter:
-            - domain: climate
+            - domain:
+                - climate
+          multiple: false
     error_boolean_helper:
       name: error_boolean_helper
       description: Select the T6 State entity
       selector:
         entity:
           filter:
-            integration: t6_program
-            domain: select
+            - integration: t6_program
+              domain:
+                - select
+          multiple: false
     cool_tolerance_helper:
       name: Tolerance for cooling
-      description: Precision for heating target, when heating it will cause the thermostat to stop short of target temperature by this value. If target temp is 20 and this is set to 1 it will heat to 19.
+      description:
+        Precision for heating target, when heating it will cause the thermostat
+        to stop short of target temperature by this value. If target temp is 20 and
+        this is set to 1 it will heat to 19.
       default: {}
       selector:
         entity:
           filter:
-            integration: t6_program
-            domain: number
+            - integration: t6_program
+              domain:
+                - number
+          multiple: false
     heat_tolerance_helper:
       name: Tolerance for heating
-      description: Precision for cooling target, when cooling it will cause the thermostat to stop short of target temperature by this value. If target temp is 20 and this is set to 1 it will cool to 21.
+      description:
+        Precision for cooling target, when cooling it will cause the thermostat
+        to stop short of target temperature by this value. If target temp is 20 and
+        this is set to 1 it will cool to 21.
       default: {}
       selector:
         entity:
           filter:
-            integration: t6_program
-            domain: number
+            - integration: t6_program
+              domain:
+                - number
+          multiple: false
     current_sensor_helper:
       name: Current Temp Sensor
       description: This entity will be updated to display the current temp sensor
@@ -54,17 +73,23 @@ blueprint:
       selector:
         entity:
           filter:
-            integration: t6_program
-            domain: select
+            - integration: t6_program
+              domain:
+                - select
+          multiple: false
     current_temp_helper:
       name: Current Temperature
-      description: This entity will be updated to display the current temperature when the automation last ran
+      description:
+        This entity will be updated to display the current temperature
+        when the automation last ran
       default: {}
       selector:
         entity:
           filter:
-            integration: t6_program
-            domain: number
+            - integration: t6_program
+              domain:
+                - number
+          multiple: false
     target_temp_helper:
       name: Current Temp Target
       description: This entity will be updated to display the temperature target
@@ -72,27 +97,37 @@ blueprint:
       selector:
         entity:
           filter:
-            integration: t6_program
-            domain: number
+            - integration: t6_program
+              domain:
+                - number
+          multiple: false
     adjusted_temp_cool_helper:
       name: Adjusted Temp Cool
-      description: This entity will be updated to display the adjusted cool temperature target
+      description:
+        This entity will be updated to display the adjusted cool temperature
+        target
       default: {}
       selector:
         entity:
           filter:
-            integration: t6_program
-            domain: number
+            - integration: t6_program
+              domain:
+                - number
+          multiple: false
     adjusted_temp_heat_helper:
       name: Adjusted Temp Heat
-      description: This entity will be updated to display the adjusted heat temperature target
+      description:
+        This entity will be updated to display the adjusted heat temperature
+        target
       default: {}
       selector:
         entity:
           filter:
-            integration: t6_program
-            domain: number
-
+            - integration: t6_program
+              domain:
+                - number
+          multiple: false
+  source_url: https://github.com/briodan/T6_program/blob/main/blueprints/integration%20based/T6%20-%20run%20based%20on%20sensor.yaml
 triggers:
   - trigger: time_pattern
     minutes: !input frequency
@@ -101,7 +136,6 @@ triggers:
       - !input cool_tolerance_helper
       - !input heat_tolerance_helper
       - !input target_temp_helper
-
 actions:
   - variables:
       error_boolean_helper: !input error_boolean_helper
@@ -110,62 +144,59 @@ actions:
       current_sensor_helper: !input current_sensor_helper
       current_temp_helper: !input current_temp_helper
       target_temp_helper: !input target_temp_helper
-
       target_temp_float: "{{ states(target_temp_helper) }}"
       current_sensor: "{{ states(current_sensor_helper) }}"
       current_temp_float: "{{ states(current_sensor) }}"
-
-      heat_low_setpoint: "{{ target_temp_float + 4 }}"
-      cool_high_setpoint: "{{ target_temp_float - 4 }}"
-
+      heat_low_setpoint: "{{ target_temp_float + 2 }}"
+      heat_high_setpoint: "{{ target_temp_float + 4 }}"
+      cool_low_setpoint: "{{ target_temp_float - 4 }}"
+      cool_high_setpoint: "{{ target_temp_float - 2 }}"
       cool_helper_float: "{{ states[cool_tolerance_helper].state | float}}"
       heat_helper_float: "{{ states[heat_tolerance_helper].state | float}}"
-
-      heat_temp: "{{ ((target_temp_float - heat_helper_float ) - current_temp_float) | round(2) }}"
-      cool_temp: "{{ ((target_temp_float + cool_helper_float ) - current_temp_float) | round(2) }}"
-
+      heat_temp:
+        "{{ ((target_temp_float - heat_helper_float ) - current_temp_float)
+        | round(2) }}"
+      cool_temp:
+        "{{ ((target_temp_float + cool_helper_float ) - current_temp_float)
+        | round(2) }}"
       adjusted_heat: "{{ (target_temp_float - heat_helper_float ) | round(2) }}"
       adjusted_cool: "{{ (target_temp_float + cool_helper_float ) | round(2) }}"
-
   - action: system_log.write
     data:
-      message: >
-        cool_tolerance_helper and value: {{ cool_tolerance_helper }},-,{{ cool_helper_float }},{{"\n"}}
-        heat_tolerance_helper and value: {{ heat_tolerance_helper }},-,{{ heat_helper_float }},{{"\n"}}
-        current_sensor_helper and value: {{ current_sensor_helper }},-,{{ current_temp_float }},{{"\n"}}
-        current_temp_helper and value: {{ current_temp_helper }},-,{{ current_temp_float }},{{"\n"}}
-        target_temp_helper and value: {{ target_temp_helper }},-,{{ target_temp_float }},{{"\n"}}
-        heat_low_setpoint: {{ heat_low_setpoint }},{{"\n"}}
-        cool_high_setpoint: {{ cool_high_setpoint }},{{"\n"}}
-        heat_temp: {{ heat_temp }},{{"\n"}}
-        cool_temp: {{ cool_temp }},{{"\n"}}
+      message:
+        'cool_tolerance_helper and value: {{ cool_tolerance_helper }},-,{{ cool_helper_float
+        }},{{"\n"}} heat_tolerance_helper and value: {{ heat_tolerance_helper }},-,{{
+        heat_helper_float }},{{"\n"}} current_sensor_helper and value: {{ current_sensor_helper
+        }},-,{{ current_temp_float }},{{"\n"}} current_temp_helper and value: {{ current_temp_helper
+        }},-,{{ current_temp_float }},{{"\n"}} target_temp_helper and value: {{ target_temp_helper
+        }},-,{{ target_temp_float }},{{"\n"}} heat_low_setpoint: {{ heat_low_setpoint
+        }},{{"\n"}} heat_high_setpoint: {{ heat_high_setpoint
+        }},{{"\n"}} cool_low_setpoint: {{ cool_low_setpoint }},{{"\n"}}  cool_high_setpoint: {{ cool_high_setpoint }},{{"\n"}}heat_temp:
+        {{ heat_temp }},{{"\n"}} cool_temp: {{ cool_temp }},{{"\n"}}
+
+        '
       level: debug
       logger: blueprints.briodan.thermostat
-
   - action: number.set_value
     data:
       value: "{{ current_temp_float }}"
     target:
       entity_id: !input current_temp_helper
-
   - action: number.set_value
     data:
       value: "{{ adjusted_cool }}"
     target:
       entity_id: !input adjusted_temp_cool_helper
-
   - action: number.set_value
     data:
       value: "{{ adjusted_heat }}"
     target:
       entity_id: !input adjusted_temp_heat_helper
-
   - choose:
       - conditions:
           - alias: heat
             condition: template
-            value_template: >-
-              {{ (heat_temp > 0) }}
+            value_template: "{{ (heat_temp > 0) }}"
         sequence:
           - action: select.select_option
             target:
@@ -174,15 +205,14 @@ actions:
               option: heat
           - action: climate.set_temperature
             data:
-              target_temp_low: "{{ target_temp_float + 2 }}"
-              target_temp_high: "{{ heat_low_setpoint }}"
+              target_temp_low: "{{ heat_low_setpoint }}"
+              target_temp_high: "{{ heat_high_setpoint }}"
             target:
               entity_id: !input thermostat
       - conditions:
           - alias: cool
             condition: template
-            value_template: >-
-              {{ (cool_temp < 0) }}
+            value_template: "{{ (cool_temp < 0) }}"
         sequence:
           - action: select.select_option
             target:
@@ -191,15 +221,16 @@ actions:
               option: cool
           - action: climate.set_temperature
             data:
-              target_temp_low: "{{ target_temp_float -2 }}"
+              target_temp_low: "{{ cool_low_setpoint }}"
               target_temp_high: "{{ cool_high_setpoint }}"
             target:
               entity_id: !input thermostat
     default:
       - action: system_log.write
         data:
-          message: >
-            no conditions matched
+          message: "no conditions matched
+
+            "
           level: info
           logger: blueprints.briodan.thermostat
       - action: select.select_option

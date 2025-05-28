@@ -4,15 +4,6 @@ This project started as a way to better manage my own T6 thermostat with the fol
 - Wanted to be able to have the thermostat run based on remote sensor (the default location of thermostats in most homes mine included is not ideal)
 - Wanted to be able to switch the remote sensor based on time of day which coresponds with different places people find themselves in the house
 
-This lead to the development of the first blueprint - [link](https://gist.github.com/briodan/c4a25ecb376df7ae7995a164100a53a3)
-- while that worked i found that i needed to make slight changes to the programs especially in spring/fall to adjust temperature variations
-
-This lead to the development of the second set of [blueprints](https://github.com/briodan/T6_program/tree/main/blueprints/original) (now split into two)
-- This allows to short term changes of temperature (during current time interval)
-- These blueprint had a bit of popularity from others but were missing some key features
-    - did not work for people using F as the temperature unit
-    - the many helpers that needed to be setup made it confusing to setup
-
 During the last few years i shared my blueprints in various places and the feedback i got was the extensive use of helpers could be confusing and it did not support temperature settings in both Celsius and Fahrenheit.
 
 So now we are here:
@@ -48,7 +39,10 @@ So now we are here:
 
 **Import the blueprints**
 - Import both blueprints under Blueprints > Integration bases
-   - (TO DO) add import links
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/briodan/T6_program/blob/main/blueprints/integration%20based/T6%20-%20set%20sensor%20and%20temp.yaml)
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/briodan/T6_program/blob/main/blueprints/integration%20based/T6%20-%20run%20based%20on%20sensor.yaml)
 
 **Configure the blueprints**
 - The blueprints filter entities to only those provided by the integration for easy matching
@@ -69,7 +63,7 @@ So now we are here:
     - when configured in C range is 0.5 to 5 C
     - when configured in F range is 0.5 to 10 F - **Need some feedback if this is approprite from people using this in F**
 
-**Adjusted Cool and Heat Temeprature**
+**Adjusted Cool and Heat Temperature**
 - These entities are used to display in a dashboard the true target temperatures after tolerances are applied
 
 **Current Sensor**
@@ -117,3 +111,13 @@ So now we are here:
 - look into adjusting the setpoints to reduce the risk of run-off
 - look into allowing the use of the blueprint with both T6 and Regular thermostats
 
+**Legacy bleuprints that might serve as inspiration for others**
+
+The first blueprint - [link](https://gist.github.com/briodan/c4a25ecb376df7ae7995a164100a53a3)
+- while that worked i found that i needed to make slight changes to the programs especially in spring/fall to adjust temperature variations
+
+The second set of [blueprints](https://github.com/briodan/T6_program/tree/main/blueprints/original) (now split into two)
+- This allows to short term changes of temperature (during current time interval)
+- These blueprint had a bit of popularity from others but were missing some key features
+    - did not work for people using F as the temperature unit
+    - the many helpers that needed to be setup made it confusing to setup
