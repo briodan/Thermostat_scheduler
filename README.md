@@ -40,9 +40,9 @@ So now we are here:
 **Import the blueprints**
 - Import both blueprints under Blueprints > Integration bases
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/briodan/T6_program/blob/main/blueprints/integration based/T6 - set sensor and temp.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/briodan/T6_program/blob/main/blueprints/integration%20based/T6%20-%20set%20sensor%20and%20temp.yaml)
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/briodan/T6_program/blob/main/blueprints/integration based/T6 - run based on sensor.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/briodan/T6_program/blob/main/blueprints/integration%20based/T6%20-%20run%20based%20on%20sensor.yaml)
 
 **Configure the blueprints**
 - The blueprints filter entities to only those provided by the integration for easy matching
