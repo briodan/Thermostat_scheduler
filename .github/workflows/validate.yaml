@@ -1,5 +1,5 @@
 # File: .github/workflows/validate.yml
-name: Validate
+name: Validate HACS
 
 on:
   push:
