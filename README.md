@@ -1,4 +1,5 @@
-This integration/repository aims to make it simpler to use my scheduler blue print for the Honeywell T6 thermostat
+This integration/repository aims to make it simpler to use my scheduler blue print for the Honeywell T6 thermostat.
+However this is not limited to be used with the Honeywell T6 thermostat, other thermostats that use low and high setpoint schould work as well.
 
 This project started as a way to better manage my own T6 thermostat with the following requirements
 - Wanted to be able to have the thermostat run based on remote sensor (the default location of thermostats in most homes mine included is not ideal)
