@@ -3,7 +3,7 @@ from homeassistant.core import HomeAssistant
 from .const import DOMAIN, PLATFORMS
 
 async def async_setup(hass: HomeAssistant, config: dict):
-    """Set up the Thermostat Scheduler component."""
+    """Set up the Thermostat Scheduler component.?"""
     return True
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
