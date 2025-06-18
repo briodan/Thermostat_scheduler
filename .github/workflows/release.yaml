@@ -47,7 +47,7 @@ jobs:
 
       - name: 📦 Build HACS-Compatible Release ZIP (flat)
         run: |
-          cd '${{ github.workspace }}/custom_components/thermostat_scheduler
+          cd '${{ github.workspace }}/custom_components/thermostat_scheduler'
           zip thermostat_scheduler.zip -r ./
 
       - name: 🚀 Publish GitHub Release with ZIP
