@@ -1,4 +1,5 @@
-This integration/repository aims to make it simpler to use my scheduler blue print for the Honeywell T6 thermostat
+This integration/repository aims to make it simpler to use my scheduler blue print for the Honeywell T6 thermostat.
+However this is not limited to be used with the Honeywell T6 thermostat, other thermostats that use low and high setpoint schould work as well.
 
 This project started as a way to better manage my own T6 thermostat with the following requirements
 - Wanted to be able to have the thermostat run based on remote sensor (the default location of thermostats in most homes mine included is not ideal)
@@ -20,10 +21,10 @@ So now we are here:
 
 **HACS**
 - Install HACS if you have not already
-- Open HACS and click three dots in right corner -> Custom Repositories -> then paste /briodan/t6_program/ in 'Repository' and choose type 'Integration' then click 'Add'
-- Now search for 'T6 Program' in HACS
+- Open HACS and click three dots in right corner -> Custom Repositories -> then paste /briodan/thermostat_scheduler/ in 'Repository' and choose type 'Integration' then click 'Add'
+- Now search for 'Thermostat Scheduler' in HACS
 - Click "Add" to confirm, and then click "Download" to download and install the integration Restart Home Assistant
-- Search for "T6 Program" in HACS and install then restart
+- Search for "Thermostat Scheduler" in HACS and install then restart
 - In Home Assistant go to Settings -> Devices and Services -> Add integration -> Search for T6 and add
 - Configure the device(s)
 
@@ -40,9 +41,9 @@ So now we are here:
 **Import the blueprints**
 - Import both blueprints under Blueprints > Integration bases
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Fbriodan%2FT6_program%2Fmain%2Fblueprints%2Fintegration%2520based%2FT6%2520-%2520set%2520sensor%2520and%2520temp.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Fbriodan%2FThermostat_scheduler%2Fmain%2Fblueprints%2Fintegration%2520based%2FT6%2520-%2520set%2520sensor%2520and%2520temp.yaml)
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Fbriodan%2FT6_program%2Fmain%2Fblueprints%2Fintegration%2520based%2FT6%2520-%2520run%2520based%2520on%2520sensor.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Fbriodan%2FThermostat_scheduler%2Fmain%2Fblueprints%2Fintegration%2520based%2FT6%2520-%2520run%2520based%2520on%2520sensor.yaml)
 
 
 **Configure the blueprints**
@@ -117,7 +118,7 @@ So now we are here:
 The first blueprint - [link](https://gist.github.com/briodan/c4a25ecb376df7ae7995a164100a53a3)
 - while that worked i found that i needed to make slight changes to the programs especially in spring/fall to adjust temperature variations
 
-The second set of [blueprints](https://github.com/briodan/T6_program/tree/main/blueprints/original) (now split into two)
+The second set of [blueprints](https://github.com/briodan/Thermostat_Scheduler/tree/main/blueprints/original) (now split into two)
 - This allows to short term changes of temperature (during current time interval)
 - These blueprint had a bit of popularity from others but were missing some key features
     - did not work for people using F as the temperature unit
