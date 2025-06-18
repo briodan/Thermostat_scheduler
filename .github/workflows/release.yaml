@@ -33,8 +33,8 @@ jobs:
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           VERSION_NO_V=${VERSION#v}
-          jq --arg v "$VERSION_NO_V" '.version = $v' custom_components/t6_program/manifest.json > tmp.json
-          mv tmp.json custom_components/t6_program/manifest.json
+          jq --arg v "$VERSION_NO_V" '.version = $v' custom_components/thermostat_scheduler/manifest.json > tmp.json
+          mv tmp.json custom_components/thermostat_scheduler/manifest.json
 
       - name: 🔖 Commit and Tag New Version
         run: |
@@ -47,14 +47,14 @@ jobs:
 
       - name: 📦 Build HACS-Compatible Release ZIP (flat)
         run: |
-          cd '${{ github.workspace }}/custom_components/t6_program'
-          zip t6_program.zip -r ./
+          cd '${{ github.workspace }}/custom_components/thermostat_scheduler
+          zip thermostat_scheduler.zip -r ./
 
       - name: 🚀 Publish GitHub Release with ZIP
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.version }}
           name: ${{ steps.version.outputs.version }}
-          files: "${{ github.workspace }}/custom_components/t6_program/t6_program.zip"
+          files: "${{ github.workspace }}/custom_components/thermostat_scheduler/thermostat_scheduler.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

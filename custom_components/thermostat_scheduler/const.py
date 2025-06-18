@@ -1,10 +1,10 @@
-DOMAIN = "t6_program"
+DOMAIN = "thermostat_scheduler"
 PLATFORMS = ["select", "number", "time"]
 
 # Device
-DEVICE_NAME = "T6 Program"
+DEVICE_NAME = "Thermostat Scheduler"
 DEVICE_MANUFACTURER = "Custom"
-DEVICE_MODEL = "T6 Scheduler"
+DEVICE_MODEL = "Thermostat Scheduler"
 DEVICE_ENTRY_TYPE = "service"
 
 # Temperature and Tolerance

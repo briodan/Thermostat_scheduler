@@ -1,8 +1,8 @@
 {
-    "name": "t6_program",
+    "name": "thermostat_scheduler",
     "render_readme": true,
     "homeassistant": "2023.0.0",
     "zip_release": true,
-    "filename": "t6_program.zip"
+    "filename": "thermostat_scheduler.zip"
   }
   
