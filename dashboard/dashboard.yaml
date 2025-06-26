@@ -20,33 +20,33 @@ views:
               grid_columns: 4
               grid_rows: 2
           - type: custom:mushroom-template-card
-            entity: select.t6_program_current_sensor
+            entity: select.thermostat_scheduler_current_sensor
             primary: Target Room
             icon: mdi:temperature-celsius
             secondary: >-
-              {{ state_attr(states('select.t6_program_current_sensor'),
+              {{ state_attr(states('select.thermostat_scheduler_current_sensor'),
               'friendly_name') | replace('Temperature', '') | replace('Sensor',
               '')}}
             tap_action:
               action: more-info
           - type: custom:mushroom-entity-card
-            entity: number.t6_program_current_temperature
+            entity: number.thermostat_scheduler_current_temperature
             name: Current Temp
           - type: horizontal-stack
             cards:
               - type: custom:mushroom-entity-card
-                entity: number.t6_program_adjusted_heat_temperature
+                entity: number.thermostat_scheduler_adjusted_heat_temperature
                 name: Heat to
                 icon_type: none
                 fill_container: true
               - type: custom:mushroom-number-card
-                entity: number.t6_program_current_target_temperature
+                entity: number.thermostat_scheduler_current_target_temperature
                 name: Target
                 icon_type: none
                 display_mode: buttons
                 secondary_info: none
               - type: custom:mushroom-entity-card
-                entity: number.t6_program_adjusted_cool_temperature
+                entity: number.thermostat_scheduler_adjusted_cool_temperature
                 name: Cool to
                 icon_type: none
                 fill_container: true
@@ -55,12 +55,12 @@ views:
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-number-card
-                    entity: number.t6_program_tolerance_heat
+                    entity: number.thermostat_scheduler_tolerance_heat
                     name: Heat Mode
                     display_mode: buttons
                   - name: Cool Mode
                     type: custom:mushroom-number-card
-                    entity: number.t6_program_tolerance_cool
+                    entity: number.thermostat_scheduler_tolerance_cool
                     display_mode: buttons
           - type: horizontal-stack
             cards:
@@ -87,7 +87,7 @@ views:
                 name: House Fan
           - type: history-graph
             entities:
-              - entity: select.t6_program_thermostat_state
+              - entity: select.thermostat_scheduler_thermostat_state
                 name: T6 State
               - entity: switch.house_fan
                 name: House Fan
