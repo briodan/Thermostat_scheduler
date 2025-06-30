@@ -52,9 +52,9 @@ So now we are here:
 **Description of entities and what they do:**
 
 **For each of the 4 daily time intervals you need to provide:**
-- Time - when the new settings stats (i.e t6_program_m_f_time_1 for weekday or t6_program_s_s_time_1 for week-end)
-- Sensor - the remote sensor to use for the time interval (i.e t6_program_m_f_sensor_1 for weekday or t6_program_s_s_sensor_1 for week-end)
-- Temperature - the target temperature to use for the time interval (i.e t6_program_m_f_temperature_1 for weekday or t6_program_s_s_temperature_1 for week-end)
+- Time - when the new settings starts (i.e thermostat_scheduler_m_f_time_1 for weekday or thermostat_scheduler_s_s_time_1 for week-end)
+- Sensor - the remote sensor to use for the time interval (i.e thermostat_scheduler_m_f_sensor_1 for weekday or thermostat_scheduler_s_s_sensor_1 for week-end)
+- Temperature - the target temperature to use for the time interval (i.e thermostat_scheduler_m_f_temperature_1 for weekday or thermostat_scheduler_s_s_temperature_1 for week-end)
 
 **Tolerance cool and tolerance heat**
 - These entities offset the target temperature
@@ -74,7 +74,7 @@ So now we are here:
     - this is used for the run sensor blueprint to know which sensor to target
 
 **Current Temperature**
-- This entitie is used to display the current temperature of the current sensor
+- This entity is used to display the current temperature of the current sensor
 (TO DO) this entity might go away in the future
 
 **Current Target Temperature**
