@@ -38,7 +38,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: select
         temp_current_target:
           name: Current Temp Target
@@ -47,7 +47,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: number
     time_1_section:
       name: 1st Time interval settings
@@ -62,7 +62,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: time
         target_temp_1:
           name: M-F first target temperature
@@ -71,7 +71,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: number
         sensor_1:
           name: M-F first sensor
@@ -80,7 +80,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: select
     time_2_section:
       name: 2nd Time interval settings
@@ -95,7 +95,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: time
         target_temp_2:
           name: M-F second target temperature
@@ -104,7 +104,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: number
         sensor_2:
           name: M-F second sensor
@@ -113,7 +113,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: select
     time_3_section:
       name: 3rd Time interval settings
@@ -128,7 +128,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: time
         target_temp_3:
           name: M-F third target temperature
@@ -137,7 +137,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: number
         sensor_3:
           name: M-F third sensor
@@ -146,7 +146,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: select
     time_4_section:
       name: 4th Time interval settings
@@ -161,7 +161,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: time
         target_temp_4:
           name: M-F fourth target temperature
@@ -170,7 +170,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: number
         sensor_4:
           name: M-F fourth sensor
@@ -179,7 +179,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: select
     time_1_ss_section:
       name: 1st Time interval settings SS
@@ -194,7 +194,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: time
         target_temp_1_ss:
           name: S-S first target temperature
@@ -203,7 +203,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: number
         sensor_1_ss:
           name: S-S first sensor
@@ -212,7 +212,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: select
     time_2_ss_section:
       name: 2nd Time interval settings SS
@@ -227,7 +227,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: time
         target_temp_2_ss:
           name: S-S second target temperature
@@ -236,7 +236,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: number
         sensor_2_ss:
           name: S-S second sensor
@@ -245,7 +245,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: select
     time_3_ss_section:
       name: 3rd Time interval settings SS
@@ -260,7 +260,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: time
         target_temp_3_ss:
           name: S-S third target temperature
@@ -269,7 +269,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: number
         sensor_3_ss:
           name: S-S third sensor
@@ -278,7 +278,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: select
     time_4_ss_section:
       name: 4th Time interval settings SS
@@ -293,7 +293,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: time
         target_temp_4_ss:
           name: S-S fourth target temperature
@@ -302,7 +302,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: number
         sensor_4_ss:
           name: S-S fourth sensor
@@ -311,7 +311,7 @@ blueprint:
           selector:
             entity:
               filter:
-                integration: t6_program
+                integration: thermostat_scheduler
                 domain: select
 
 triggers:
