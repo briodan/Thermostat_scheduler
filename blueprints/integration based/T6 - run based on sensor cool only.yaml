@@ -1,0 +1,111 @@
+blueprint:
+  name: T6 - run based on sensor cool only
+  description: T6 - run based on sensor cool only
+  domain: automation
+  homeassistant:
+    min_version: 2024.10.0
+  input:
+    frequency:
+      name: Frequency
+      description:
+        how often to check sensor status? 1, 5 or 10 minues. 1 min should
+        be used for testing purposes with a generic thermostat
+      selector:
+        select:
+          options:
+            - /1
+            - /5
+            - /10
+          sort: false
+          custom_value: false
+          multiple: false
+    thermostat:
+      name: Thermostat
+      description: Select the Thermostat
+      selector:
+        entity:
+          filter:
+            - domain:
+                - climate
+          multiple: false
+    error_boolean_helper:
+      name: error_boolean_helper
+      description: Select the T6 State entity
+      selector:
+        entity:
+          filter:
+            - integration: thermostat_scheduler
+              domain:
+                - select
+          multiple: false
+    current_sensor_helper:
+      name: Current Temp Sensor
+      description: This entity will be updated to display the current temp sensor
+      default: {}
+      selector:
+        entity:
+          filter:
+            - integration: thermostat_scheduler
+              domain:
+                - select
+          multiple: false
+    current_temp_helper:
+      name: Current Temperature
+      description:
+        This entity will be updated to display the current temperature
+        when the automation last ran
+      default: {}
+      selector:
+        entity:
+          filter:
+            - integration: thermostat_scheduler
+              domain:
+                - number
+          multiple: false
+    target_temp_helper:
+      name: Current Temp Target
+      description: This entity will be updated to display the temperature target
+      default: {}
+      selector:
+        entity:
+          filter:
+            - integration: thermostat_scheduler
+              domain:
+                - number
+          multiple: false
+  source_url: https://github.com/briodan/T6_program/blob/main/blueprints/integration%20based/T6%20-%20run%20based%20on%20sensor.yaml
+triggers:
+  - trigger: time_pattern
+    minutes: !input frequency
+  - trigger: state
+    entity_id:
+      - !input target_temp_helper
+actions:
+  - variables:
+      error_boolean_helper: !input error_boolean_helper
+      current_sensor_helper: !input current_sensor_helper
+      current_temp_helper: !input current_temp_helper
+      target_temp_helper: !input target_temp_helper
+      target_temp_float: "{{ states(target_temp_helper) }}"
+      current_sensor: "{{ states(current_sensor_helper) }}"
+      current_temp_float: "{{ states(current_sensor) }}"
+  - action: system_log.write
+    data:
+      message: '
+        current_sensor_helper and value: {{ current_sensor_helper}},-,{{ current_temp_float }},{{"\n"}}
+        current_temp_helper and value: {{ current_temp_helper}},-,{{ current_temp_float }},{{"\n"}}
+        target_temp_helper and value: {{ target_temp_helper}},-,{{ target_temp_float }},{{"\n"}}
+        '
+      level: debug
+      logger: blueprints.briodan.thermostat
+  - action: number.set_value
+    data:
+      value: "{{ current_temp_float }}"
+    target:
+      entity_id: !input current_temp_helper
+  - action: climate.set_temperature
+    data:
+      temperature: "{{ target_temp_float }}"
+      hvac_mode: cool
+    target:
+      entity_id: !input thermostat
