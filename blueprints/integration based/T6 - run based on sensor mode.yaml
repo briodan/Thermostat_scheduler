@@ -216,7 +216,7 @@ actions:
               option: cool
           - action: climate.set_temperature
             data:
-              temperature: "{{ cool_high_setpoint }}"
+              temperature: "{{ cool_low_setpoint }}"
               hvac_mode: cool
             target:
               entity_id: !input thermostat
