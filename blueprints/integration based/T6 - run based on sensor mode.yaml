@@ -127,7 +127,7 @@ blueprint:
               domain:
                 - number
           multiple: false
-  source_url: https://github.com/briodan/T6_program/blob/main/blueprints/integration%20based/T6%20-%20run%20based%20on%20sensor.yaml
+  source_url: https://github.com/briodan/Thermostat_scheduler/blob/main/blueprints/integration%20based/T6%20-%20run%20based%20on%20sensor%20mode.yaml
 triggers:
   - trigger: time_pattern
     minutes: !input frequency
@@ -153,23 +153,28 @@ actions:
       cool_high_setpoint: "{{ target_temp_float - 2 }}"
       cool_helper_float: "{{ states[cool_tolerance_helper].state | float}}"
       heat_helper_float: "{{ states[heat_tolerance_helper].state | float}}"
-      heat_temp: "{{ ((target_temp_float - heat_helper_float ) - current_temp_float) | round(2) }}"
-      cool_temp: "{{ ((target_temp_float + cool_helper_float ) - current_temp_float) | round(2) }}"
+      heat_temp:
+        "{{ ((target_temp_float - heat_helper_float ) - current_temp_float)
+        | round(2) }}"
+      cool_temp:
+        "{{ ((target_temp_float + cool_helper_float ) - current_temp_float)
+        | round(2) }}"
       adjusted_heat: "{{ (target_temp_float - heat_helper_float ) | round(2) }}"
       adjusted_cool: "{{ (target_temp_float + cool_helper_float ) | round(2) }}"
   - action: system_log.write
     data:
-      message: 'cool_tolerance_helper and value: {{ cool_tolerance_helper }},-,{{ cool_helper_float
-      }},{{"\n"}} heat_tolerance_helper and value: {{ heat_tolerance_helper }},-,{{
-      heat_helper_float }},{{"\n"}} current_sensor_helper and value: {{ current_sensor_helper
-      }},-,{{ current_temp_float }},{{"\n"}} current_temp_helper and value: {{ current_temp_helper
-      }},-,{{ current_temp_float }},{{"\n"}} target_temp_helper and value: {{ target_temp_helper
-      }},-,{{ target_temp_float }},{{"\n"}} heat_low_setpoint: {{ heat_low_setpoint
-      }},{{"\n"}} heat_high_setpoint: {{ heat_high_setpoint }},{{"\n"}} cool_low_setpoint:
-      {{ cool_low_setpoint }},{{"\n"}}  cool_high_setpoint: {{ cool_high_setpoint
-      }},{{"\n"}}heat_temp: {{ heat_temp }},{{"\n"}} cool_temp: {{ cool_temp }},{{"\n"}}
+      message:
+        'cool_tolerance_helper and value: {{ cool_tolerance_helper }},-,{{ cool_helper_float
+        }},{{"\n"}} heat_tolerance_helper and value: {{ heat_tolerance_helper }},-,{{
+        heat_helper_float }},{{"\n"}} current_sensor_helper and value: {{ current_sensor_helper
+        }},-,{{ current_temp_float }},{{"\n"}} current_temp_helper and value: {{ current_temp_helper
+        }},-,{{ current_temp_float }},{{"\n"}} target_temp_helper and value: {{ target_temp_helper
+        }},-,{{ target_temp_float }},{{"\n"}} heat_low_setpoint: {{ heat_low_setpoint
+        }},{{"\n"}} heat_high_setpoint: {{ heat_high_setpoint }},{{"\n"}} cool_low_setpoint:
+        {{ cool_low_setpoint }},{{"\n"}}  cool_high_setpoint: {{ cool_high_setpoint
+        }},{{"\n"}}heat_temp: {{ heat_temp }},{{"\n"}} cool_temp: {{ cool_temp }},{{"\n"}}
 
-      '
+        '
       level: debug
       logger: blueprints.briodan.thermostat
   - action: number.set_value
@@ -223,7 +228,7 @@ actions:
     default:
       - action: system_log.write
         data:
-          message: "no conditions matched"
+          message: no conditions matched
           level: info
           logger: blueprints.briodan.thermostat
       - action: select.select_option
@@ -231,8 +236,8 @@ actions:
           entity_id: !input error_boolean_helper
         data:
           option: idle
-      - action: climate.set_temperature
+      - action: climate.set_hvac_mode
         data:
-          hvac_mode: off
+          hvac_mode: "off"
         target:
           entity_id: !input thermostat
