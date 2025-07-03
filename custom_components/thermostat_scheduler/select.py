@@ -5,6 +5,9 @@ from homeassistant.helpers.entity_registry import async_get
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
+import logging
+_LOGGER = logging.getLogger(__name__)
+
 from .const import (
     DOMAIN,
     DEVICE_NAME,
@@ -48,8 +51,6 @@ class BaseT6Select(SelectEntity, RestoreEntity):
             "entry_type": DEVICE_ENTRY_TYPE,
         }
 
-
-
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -59,19 +60,26 @@ async def async_setup_entry(
 
     registry = async_get(hass)
     all_entities = registry.entities.values()
-    temp_sensors = sorted([
-        e.entity_id for e in all_entities
-        if e.domain == "sensor" and (
-            e.device_class == "temperature" or "temperature" in e.entity_id
-        )
-    ]) or [DEFAULT_SENSOR]
-    default_sensor = temp_sensors[0]
+    configured_sensors = entry.options.get("sensor_filter") or entry.data.get("sensor_filter")
+    _LOGGER.debug("sensor_filter from config entry: %s", configured_sensors)
+    if configured_sensors:
+        temp_sensors = configured_sensors
+        _LOGGER.debug("Final temp_sensors list: %s", temp_sensors)
+    else:
+        temp_sensors = sorted([
+            e.entity_id for e in all_entities
+            if e.domain == "sensor" and (
+                e.device_class == "temperature" or "temperature" in e.entity_id
+            )
+        ]) or [DEFAULT_SENSOR]
+    default_sensor = temp_sensors[0] if temp_sensors else DEFAULT_SENSOR
+    _LOGGER.debug("Using default_sensor: %s", default_sensor)
 
     for i in range(1, 5):
         for prefix in ("m_f", "s_s"):
             key = f"{prefix}_sensor_{i}"
             name = key.replace("_", " ").title()
-            selected = entry.data.get(key, default_sensor)
+            selected = entry.options.get(key, entry.data.get(key, default_sensor))
             entities.append(
                 BaseT6Select(name=name, unique_id=key, options=temp_sensors, initial_option=selected, entry_id=entry.entry_id)
             )
