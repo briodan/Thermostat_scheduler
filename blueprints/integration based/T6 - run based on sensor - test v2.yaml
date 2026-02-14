@@ -253,3 +253,9 @@ actions:
           entity_id: !input error_boolean_helper
         data:
           option: idle
+      - action: climate.set_temperature
+        data:
+          target_temp_low: "{{ cool_low_setpoint }}"
+          target_temp_high: "{{ heat_high_setpoint }}"
+        target:
+          entity_id: !input thermostat
