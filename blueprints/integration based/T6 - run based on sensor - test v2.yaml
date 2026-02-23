@@ -41,7 +41,7 @@ blueprint:
     cool_tolerance_helper:
       name: Tolerance for cooling
       description:
-        Precision for cooling target, when cooling it will cause the thermostat
+        Precision for heating target, when heating it will cause the thermostat
         to stop short of target temperature by this value. If target temp is 20 and
         this is set to 1 it will cool to 21.
       default: {}
@@ -55,7 +55,7 @@ blueprint:
     heat_tolerance_helper:
       name: Tolerance for heating
       description:
-        Precision for heating target, when heating it will cause the thermostat
+        Precision for cooling target, when cooling it will cause the thermostat
         to stop short of target temperature by this value. If target temp is 20 and
         this is set to 1 it will heat to 19.
       default: {}
